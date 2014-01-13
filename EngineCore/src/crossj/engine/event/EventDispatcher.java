@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class EventDispatcher {
     @SuppressWarnings("rawtypes")
-    private final Map<Class<? extends IEvent>, List> listeners;
+    private final Map<Class<? extends Event>, List> listeners;
 
     public EventDispatcher() {
         listeners = new HashMap<>();
@@ -25,7 +25,7 @@ public class EventDispatcher {
      * @param listener
      *            The listener to add
      */
-    public <L> void addListener(Class<? extends IEvent<L>> eventClass, L listener) {
+    public <L> void addListener(Class<? extends Event<L>> eventClass, L listener) {
         synchronized (listeners) {
             List<L> eventListeners = getListeners(eventClass);
             if (!eventListeners.contains(listener)) {
@@ -43,7 +43,7 @@ public class EventDispatcher {
      * @param listener
      *            The listener to remove
      */
-    public <L> void removeListener(Class<? extends IEvent<L>> eventClass, L listener) {
+    public <L> void removeListener(Class<? extends Event<L>> eventClass, L listener) {
         synchronized (listeners) {
             List<L> eventListeners = getListeners(eventClass);
             if (eventListeners.contains(listener)) {
@@ -59,7 +59,7 @@ public class EventDispatcher {
      * @param event
      *            The event to broadcast to listeners
      */
-    public <L> void notify(IEvent<L> event) {
+    public <L> void notify(Event<L> event) {
         notify(event, true);
     }
 
@@ -75,7 +75,7 @@ public class EventDispatcher {
      *            true if the event should not continue to be broadcast once a
      *            listener consumes the event.
      */
-    public <L> void notify(IEvent<L> event, boolean consumable) {
+    public <L> void notify(Event<L> event, boolean consumable) {
         boolean consumed;
         synchronized (listeners) {
             List<L> eventListeners = getListeners(event);
@@ -94,11 +94,11 @@ public class EventDispatcher {
      * Convenience method for getting listeners of the type of a given event
      */
     @SuppressWarnings("unchecked")
-    private <L> List<L> getListeners(IEvent<L> event) {
-        return getListeners((Class<? extends IEvent<L>>) event.getClass());
+    private <L> List<L> getListeners(Event<L> event) {
+        return getListeners((Class<? extends Event<L>>) event.getClass());
     }
 
-    private <L> List<L> getListeners(Class<? extends IEvent<L>> eventClass) {
+    private <L> List<L> getListeners(Class<? extends Event<L>> eventClass) {
         synchronized (listeners) {
             @SuppressWarnings("unchecked")
             List<L> eventListeners = listeners.get(eventClass);

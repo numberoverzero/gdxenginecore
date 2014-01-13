@@ -1,9 +1,9 @@
 package crossj.engine.events;
 
-import crossj.engine.event.IEvent;
+import crossj.engine.event.Event;
 import crossj.engine.objects.GameObject;
 
-public class GameObjectPropertyEvent<T> implements IEvent<GameObjectListener> {
+public class GameObjectPropertyEvent<T> implements Event<GameObjectListener> {
 
     private final GameObject gameObject;
     private final String property;

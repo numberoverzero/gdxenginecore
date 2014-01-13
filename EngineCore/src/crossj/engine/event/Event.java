@@ -6,7 +6,7 @@ package crossj.engine.event;
 /**
  * An event notifies a listener that it is available for consumption.
  */
-public interface IEvent<L> {
+public interface Event<L> {
     /**
      * Returns true if the event was consumed by the listener false otherwise
      * 
