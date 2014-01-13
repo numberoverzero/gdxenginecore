@@ -16,10 +16,12 @@ public class SpriteSheetActor implements Actor {
     private float stateTime;
 
     public SpriteSheetActor(Texture texture, int frameColumns, int frameRows, float fps, int playMode) {
-        this(texture, frameColumns, frameRows, fps, playMode, texture.getWidth() / frameColumns, texture.getHeight() / frameRows);
+        this(texture, frameColumns, frameRows, fps, playMode, texture.getWidth() / frameColumns, texture.getHeight()
+                / frameRows);
     }
 
-    public SpriteSheetActor(Texture texture, int frameColumns, int frameRows, float fps, int playMode, int width, int height) {
+    public SpriteSheetActor(Texture texture, int frameColumns, int frameRows, float fps, int playMode, int width,
+            int height) {
         animation = Graphics.fromSpriteSheet(texture, 1 / fps, frameColumns, frameRows);
         animation.setPlayMode(playMode);
         this.width = width;
@@ -46,16 +48,13 @@ public class SpriteSheetActor implements Actor {
 
     @Override
     public void act(SpriteBatch spriteBatch, float delta) {
-        if(!isEnabled()) {
+        if (!isEnabled()) {
             return;
         }
         stateTime += delta;
         TextureRegion frame = animation.getKeyFrame(stateTime);
-        spriteBatch.draw(
-                frame,
-                x - originX * frame.getRegionWidth(),
-                y - originY * frame.getRegionHeight(),
-                width, height);
+        spriteBatch.draw(frame, x - originX * frame.getRegionWidth(), y - originY * frame.getRegionHeight(), width,
+                height);
     }
 
     @Override

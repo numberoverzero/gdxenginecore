@@ -3,9 +3,9 @@ package crossj.engine.input;
 import com.badlogic.gdx.InputProcessor;
 
 /**
- * Default implementation of an InputProcessor,
- * for less verbose custom processors
- *
+ * Default implementation of an InputProcessor, for less verbose custom
+ * processors
+ * 
  */
 public class InputProcessorAdapter implements InputProcessor {
 

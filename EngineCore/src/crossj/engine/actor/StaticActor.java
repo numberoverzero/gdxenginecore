@@ -23,8 +23,7 @@ public class StaticActor implements Actor {
         this(texture, x, y, texture.getWidth(), texture.getHeight());
     }
 
-    public StaticActor(Texture texture, float x, float y, float width,
-            float height) {
+    public StaticActor(Texture texture, float x, float y, float width, float height) {
         this.texture = texture;
         this.x = x;
         this.y = y;
@@ -46,15 +45,10 @@ public class StaticActor implements Actor {
 
     @Override
     public void act(SpriteBatch spriteBatch, float delta) {
-        if(!isEnabled()) {
+        if (!isEnabled()) {
             return;
         }
-        spriteBatch.draw(
-                texture,
-                x - originX * texture.getWidth(),
-                y - originY * texture.getHeight(),
-                width,
-                height);
+        spriteBatch.draw(texture, x - originX * texture.getWidth(), y - originY * texture.getHeight(), width, height);
     }
 
     @Override

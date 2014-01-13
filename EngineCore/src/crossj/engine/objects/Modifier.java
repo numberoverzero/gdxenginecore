@@ -11,9 +11,9 @@ public class Modifier extends GameObject {
      * Events this class can trigger
      */
     public static enum EventType {
-        APPLIED,
-        REMOVED
+        APPLIED, REMOVED
     }
+
     private final String name;
 
     public Modifier(EventDispatcher dispatcher, String name) {

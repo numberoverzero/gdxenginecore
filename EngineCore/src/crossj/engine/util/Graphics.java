@@ -6,10 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Graphics {
     public static Animation fromSpriteSheet(Texture texture, float frameDuration, int frameColumns, int frameRows) {
-        TextureRegion[][] tmp = TextureRegion.split(
-                texture,
-                texture.getWidth() / frameColumns,
-                texture.getHeight() / frameRows);
+        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / frameColumns, texture.getHeight()
+                / frameRows);
         TextureRegion[] frames = new TextureRegion[frameColumns * frameRows];
         int index = 0;
         for (int i = 0; i < frameRows; i++) {

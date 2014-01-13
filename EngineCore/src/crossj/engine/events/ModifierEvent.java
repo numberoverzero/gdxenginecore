@@ -17,7 +17,7 @@ public class ModifierEvent implements IEvent<ModiferListener> {
 
     @Override
     public boolean notify(ModiferListener listener) {
-        switch(type) {
+        switch (type) {
         case APPLIED:
             return listener.onModiferApplied(gameObject, modifier);
         case REMOVED:

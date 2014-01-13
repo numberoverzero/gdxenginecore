@@ -37,15 +37,11 @@ public class StaticTextActor implements Actor {
 
     @Override
     public void act(SpriteBatch spriteBatch, float delta) {
-        if(!isEnabled()) {
+        if (!isEnabled()) {
             return;
         }
         TextBounds bounds = font.getBounds(text);
-        font.draw(
-                spriteBatch,
-                text,
-                x - originX * bounds.width,
-                y + originY * bounds.height);
+        font.draw(spriteBatch, text, x - originX * bounds.width, y + originY * bounds.height);
 
     }
 
