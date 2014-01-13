@@ -2,6 +2,7 @@ package crossj.engine.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 import crossj.engine.util.Math;
 
@@ -11,7 +12,7 @@ import crossj.engine.util.Math;
  */
 public class StaticActor implements Actor {
     private final Texture texture;
-    private float x, y, originX, originY;
+    private final Vector2 position, origin;
     private final float width, height;
     private boolean enabled;
 
@@ -25,8 +26,8 @@ public class StaticActor implements Actor {
 
     public StaticActor(Texture texture, float x, float y, float width, float height) {
         this.texture = texture;
-        this.x = x;
-        this.y = y;
+        position = new Vector2(x, y);
+        origin = new Vector2(0, 0);
         this.width = width;
         this.height = height;
         enabled = true;
@@ -34,8 +35,9 @@ public class StaticActor implements Actor {
 
     @Override
     public void setOrigin(float x, float y) {
-        originX = Math.constrain(x, 0, 1);
-        originY = Math.constrain(y, 0, 1);
+        origin.set(
+                Math.constrain(x, 0, 1),
+                Math.constrain(y, 0, 1));
     }
 
     @Override
@@ -48,13 +50,22 @@ public class StaticActor implements Actor {
         if (!isEnabled()) {
             return;
         }
-        spriteBatch.draw(texture, x - originX * texture.getWidth(), y - originY * texture.getHeight(), width, height);
+        spriteBatch.draw(texture, position.x - origin.x * texture.getWidth(), position.y - origin.y * texture.getHeight(), width, height);
+    }
+
+    @Override
+    public void setPosition(Vector2 position) {
+        setPosition(position.x, position.y);
     }
 
     @Override
     public void setPosition(float x, float y) {
-        this.x = x;
-        this.y = y;
+        position.set(x, y);
+    }
+
+    @Override
+    public Vector2 getPosition() {
+        return position;
     }
 
     @Override

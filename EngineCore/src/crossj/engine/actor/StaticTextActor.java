@@ -3,13 +3,14 @@ package crossj.engine.actor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 import crossj.engine.util.Math;
 
 public class StaticTextActor implements Actor {
     private final BitmapFont font;
     private final String text;
-    private float x, y, originX, originY;
+    private final Vector2 position, origin;
     private boolean enabled;
 
     public StaticTextActor(BitmapFont font, String text) {
@@ -19,15 +20,16 @@ public class StaticTextActor implements Actor {
     public StaticTextActor(BitmapFont font, String text, float x, float y) {
         this.font = font;
         this.text = text;
-        this.x = x;
-        this.y = y;
+        position = new Vector2(x, y);
+        origin = new Vector2(0, 0);
         enabled = true;
     }
 
     @Override
     public void setOrigin(float x, float y) {
-        originX = Math.constrain(x, 0, 1);
-        originY = Math.constrain(y, 0, 1);
+        origin.set(
+                Math.constrain(x, 0, 1),
+                Math.constrain(y, 0, 1));
     }
 
     @Override
@@ -41,14 +43,23 @@ public class StaticTextActor implements Actor {
             return;
         }
         TextBounds bounds = font.getBounds(text);
-        font.draw(spriteBatch, text, x - originX * bounds.width, y + originY * bounds.height);
+        font.draw(spriteBatch, text, position.x - origin.x * bounds.width, position.y + origin.y * bounds.height);
 
     }
 
     @Override
+    public void setPosition(Vector2 position) {
+        setPosition(position.x, position.y);
+    }
+
+    @Override
     public void setPosition(float x, float y) {
-        this.x = x;
-        this.y = y;
+        position.set(x, y);
+    }
+
+    @Override
+    public Vector2 getPosition() {
+        return position;
     }
 
     @Override

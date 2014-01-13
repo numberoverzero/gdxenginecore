@@ -15,4 +15,10 @@ public class Unit extends GameObject {
         return actor;
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        actor.dispose();
+    }
+
 }
