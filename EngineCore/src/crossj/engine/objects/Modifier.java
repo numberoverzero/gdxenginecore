@@ -1,5 +1,7 @@
 package crossj.engine.objects;
 
+import com.badlogic.gdx.math.Vector2;
+
 import crossj.engine.event.EventDispatcher;
 import crossj.engine.events.ModifierEvent;
 
@@ -38,5 +40,10 @@ public class Modifier extends GameObject {
     public void setPercent(float newValue) {
         float oldValue = 0f;
         onPropertyChange("percent", oldValue, newValue);
+    }
+
+    @Override
+    public Vector2 getPosition() {
+        return new Vector2(0, 0);
     }
 }

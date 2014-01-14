@@ -23,7 +23,7 @@ public class World implements Disposable {
 
     com.badlogic.gdx.physics.box2d.World world;
     private float accumulator; // http://gafferongames.com/game-physics/fix-your-timestep/
-    private final List<Body> managedBodies;
+    private final List<WorldBody> managedBodies;
 
     public World() {
         this(Vector2.Zero);
@@ -66,7 +66,7 @@ public class World implements Disposable {
     /**
      * Creates a managed body.
      */
-    public Body createBody(BodyDef def) {
+    public WorldBody createBody(BodyDef def) {
         return createBody(def, true);
     }
 
@@ -74,22 +74,23 @@ public class World implements Disposable {
      * Create a body, and optionally allow the world to manage it. If the world
      * is restarted, for instance, all managed bodies will be destroyed.
      */
-    public Body createBody(BodyDef def, boolean manageBody) {
+    public WorldBody createBody(BodyDef def, boolean manageBody) {
         Body body = world.createBody(def);
+        WorldBody wBody = new WorldBody(body, this);
         if (manageBody) {
-            managedBodies.add(body);
+            managedBodies.add(wBody);
         }
-        return body;
+        return wBody;
     }
 
-    public void destroyBody(Body body) {
+    public void destroyBody(WorldBody body) {
         managedBodies.remove(body);
-        world.destroyBody(body);
+        world.destroyBody(body.getBox2DBody());
     }
 
     public void restart() {
-        for (Body body : managedBodies) {
-            world.destroyBody(body);
+        for (WorldBody wBody : managedBodies) {
+            world.destroyBody(wBody.getBox2DBody());
         }
         managedBodies.clear();
     }
@@ -118,12 +119,12 @@ public class World implements Disposable {
         return boxVec.scl(boxToWorld);
     }
 
-    public com.badlogic.gdx.physics.box2d.World getWorld() {
+    public com.badlogic.gdx.physics.box2d.World getBox2DWorld() {
         return world;
     }
 
     public void debugRender(Camera camera) {
-        getDebugRenderer().render(getWorld(), camera.combined.cpy().scl(toWorldScale()));
+        getDebugRenderer().render(getBox2DWorld(), camera.combined.cpy().scl(toWorldScale()));
     }
 
     /**

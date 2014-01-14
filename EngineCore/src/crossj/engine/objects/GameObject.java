@@ -3,6 +3,7 @@ package crossj.engine.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
 import crossj.engine.event.EventDispatcher;
@@ -29,6 +30,8 @@ public abstract class GameObject implements Disposable {
         return modifiers;
     }
 
+    public abstract Vector2 getPosition();
+
     @Override
     public void dispose() {
         while (!modifiers.isEmpty()) {
@@ -39,9 +42,9 @@ public abstract class GameObject implements Disposable {
 
     /**
      * Notify listeners that the object's property has changed.
-     * 
+     *
      * For example, to notify that health has changed: <blockquote>
-     * 
+     *
      * <pre>
      * public void setHealth(int newHealth) {
      *     int oldHealth = health;
@@ -49,9 +52,9 @@ public abstract class GameObject implements Disposable {
      *     onPropertyChange(&quot;Health&quot;, oldHealth, newHealth);
      * }
      * </pre>
-     * 
+     *
      * </blockquote>
-     * 
+     *
      * @param property
      *            Name of the property that is changing
      * @param oldValue
