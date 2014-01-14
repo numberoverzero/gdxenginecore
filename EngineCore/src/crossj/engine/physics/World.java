@@ -1,8 +1,13 @@
 package crossj.engine.physics;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.Disposable;
 
 public class World implements Disposable {
@@ -14,9 +19,11 @@ public class World implements Disposable {
 
     private final float step, worldToBox, boxToWorld;
     private final int velocityIterations, positionIterations;
+    private Box2DDebugRenderer debugRenderer;
 
     com.badlogic.gdx.physics.box2d.World world;
     private float accumulator; // http://gafferongames.com/game-physics/fix-your-timestep/
+    private final List<Body> managedBodies;
 
     public World() {
         this(Vector2.Zero);
@@ -30,6 +37,7 @@ public class World implements Disposable {
         boxToWorld = DEFAULT_BOX_TO_WORLD;
         velocityIterations = DEFAULT_BOX_VELOCITY_ITERATIONS;
         positionIterations = DEFAULT_BOX_POSITION_ITERATIONS;
+        managedBodies = new ArrayList<>();
     }
 
     public void setGravity(Vector2 gravity) {
@@ -50,11 +58,40 @@ public class World implements Disposable {
 
     @Override
     public void dispose() {
+        managedBodies.clear();
         world.dispose();
+        getDebugRenderer().dispose();
     }
 
+    /**
+     * Creates a managed body.
+     */
     public Body createBody(BodyDef def) {
-        return world.createBody(def);
+        return createBody(def, true);
+    }
+
+    /**
+     * Create a body, and optionally allow the world to manage it. If the world
+     * is restarted, for instance, all managed bodies will be destroyed.
+     */
+    public Body createBody(BodyDef def, boolean manageBody) {
+        Body body = world.createBody(def);
+        if (manageBody) {
+            managedBodies.add(body);
+        }
+        return body;
+    }
+
+    public void destroyBody(Body body) {
+        managedBodies.remove(body);
+        world.destroyBody(body);
+    }
+
+    public void restart() {
+        for (Body body : managedBodies) {
+            world.destroyBody(body);
+        }
+        managedBodies.clear();
     }
 
     public float toBoxScale() {
@@ -83,6 +120,21 @@ public class World implements Disposable {
 
     public com.badlogic.gdx.physics.box2d.World getWorld() {
         return world;
+    }
+
+    public void debugRender(Camera camera) {
+        getDebugRenderer().render(getWorld(), camera.combined.cpy().scl(toWorldScale()));
+    }
+
+    /**
+     * Don't create a debug renderer unless we need one
+     * @return
+     */
+    private Box2DDebugRenderer getDebugRenderer() {
+        if(debugRenderer == null) {
+            debugRenderer = new Box2DDebugRenderer();
+        }
+        return debugRenderer;
     }
 
 }
