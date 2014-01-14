@@ -10,14 +10,12 @@ import com.badlogic.gdx.math.Vector3;
 
 import crossj.engine.event.EventDispatcher;
 import crossj.engine.fonts.TTFontCache;
-import crossj.engine.input.InputProcessorAdapter;
 import crossj.engine.util.Graphics;
 
-public abstract class Screen2D implements Screen {
+public abstract class Screen2D implements Screen, InputProcessor{
     protected final EventDispatcher eventDispatcher;
     protected final OrthographicCamera camera;
     protected final SpriteBatch spriteBatch;
-    protected InputProcessor inputProcessor;
     protected final String debugName;
     protected final TTFontCache fonts;
     protected final BitmapFont debugFont;
@@ -30,8 +28,6 @@ public abstract class Screen2D implements Screen {
         camera.setToOrtho(false);
         spriteBatch = new SpriteBatch();
         eventDispatcher = new EventDispatcher();
-        inputProcessor = new InputProcessorAdapter() {
-        };
 
         fonts = new TTFontCache();
         fonts.add("open-sans", "data/OpenSans-Regular.ttf");
@@ -70,7 +66,7 @@ public abstract class Screen2D implements Screen {
 
     @Override
     public final InputProcessor getInputProcessor() {
-        return inputProcessor;
+        return this;
     }
 
     @Override
@@ -96,5 +92,45 @@ public abstract class Screen2D implements Screen {
 
     @Override
     public void resume() {
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
     }
 }
