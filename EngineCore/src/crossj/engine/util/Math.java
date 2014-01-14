@@ -36,6 +36,15 @@ public class Math {
         return v.set(constrain(v.x, a.x, b.x), constrain(v.y, a.y, b.y));
     }
 
+    public static float angle(Vector2 v1, Vector2 v2) {
+        float degrees = new Vector2(v2).sub(v1).angle();
+        return degrees * MathUtils.degreesToRadians;
+    }
+
+    public static Vector2 midpoint(Vector2 v1, Vector2 v2) {
+        return new Vector2((v2.x + v1.x) / 2, (v2.y + v1.y) / 2);
+    }
+
     public static int mod(int v, int max) {
         return (v % max + max) % max;
     }
