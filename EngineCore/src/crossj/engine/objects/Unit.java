@@ -35,4 +35,8 @@ public class Unit extends GameObject {
         return body.getPosition();
     }
 
+    public void setPosition(Vector2 position) {
+        body.setPosition(position);
+    }
+
 }

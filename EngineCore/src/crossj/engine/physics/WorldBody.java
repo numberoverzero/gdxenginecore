@@ -28,7 +28,7 @@ public class WorldBody implements Disposable {
     }
 
     /**
-     * Set the restitution on all body {@link Fixture}s.
+     * Calls {@link Fixture#setRestitution} on all body {@link Fixture}s.
      * @param restitution
      */
     public void setRestitution(float restitution) {
@@ -38,15 +38,19 @@ public class WorldBody implements Disposable {
     }
 
     public void setPosition(Vector2 position) {
-        body.setTransform(position, body.getAngle());
+        body.setTransform(world.toBox(position), body.getAngle());
     }
 
     public Vector2 getPosition() {
-        return body.getWorldCenter();
+        return world.toWorld(body.getWorldCenter());
     }
 
-    public Vector2 getVelocity() {
-        return body.getLinearVelocity();
+    public void setLinearVelocity(Vector2 velocity) {
+        body.setLinearVelocity(world.toBox(velocity));
+    }
+
+    public Vector2 getLinearVelocity() {
+        return world.toWorld(body.getLinearVelocity());
     }
 
     public float getAngle() {

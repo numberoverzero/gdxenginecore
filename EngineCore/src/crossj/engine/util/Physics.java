@@ -20,6 +20,7 @@ public class Physics {
     static PolygonShape rectangleShape;
     static {
         dynamicBodyDef = new BodyDef();
+        dynamicBodyDef.fixedRotation = true;
         dynamicBodyDef.type = BodyType.DynamicBody;
 
         staticBodyDef = new BodyDef();

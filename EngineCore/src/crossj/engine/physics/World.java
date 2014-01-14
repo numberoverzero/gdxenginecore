@@ -26,7 +26,7 @@ public class World implements Disposable {
     private final List<WorldBody> managedBodies;
 
     public World() {
-        this(Vector2.Zero);
+        this(new Vector2());
     }
 
     public World(Vector2 gravity) {
