@@ -9,19 +9,25 @@ import crossj.engine.physics.WorldBody;
 public class Unit extends GameObject {
     private final Actor actor;
     private final WorldBody body;
+    private final Mover mover;
 
-    public Unit(EventDispatcher dispatcher, Actor actor, WorldBody body) {
+    public Unit(EventDispatcher dispatcher, Actor actor, WorldBody body, Mover mover) {
         super(dispatcher);
         this.actor = actor;
         this.body = body;
+        this.mover = mover;
     }
 
     public Actor getActor() {
         return actor;
     }
 
-    public WorldBody getBody() {
+    private WorldBody getBody() {
         return body;
+    }
+
+    public Mover getMover() {
+        return mover;
     }
 
     @Override

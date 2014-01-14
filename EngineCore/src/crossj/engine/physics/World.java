@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.Disposable;
 
 public class World implements Disposable {
@@ -38,6 +39,10 @@ public class World implements Disposable {
         velocityIterations = DEFAULT_BOX_VELOCITY_ITERATIONS;
         positionIterations = DEFAULT_BOX_POSITION_ITERATIONS;
         managedBodies = new ArrayList<>();
+    }
+
+    public void setContactListener(ContactListener listener) {
+        world.setContactListener(listener);
     }
 
     public void setGravity(Vector2 gravity) {
@@ -129,11 +134,13 @@ public class World implements Disposable {
 
     /**
      * Don't create a debug renderer unless we need one
+     *
      * @return
      */
     private Box2DDebugRenderer getDebugRenderer() {
-        if(debugRenderer == null) {
+        if (debugRenderer == null) {
             debugRenderer = new Box2DDebugRenderer();
+            debugRenderer.setDrawContacts(true);
         }
         return debugRenderer;
     }

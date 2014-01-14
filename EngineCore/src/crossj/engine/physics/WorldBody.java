@@ -24,7 +24,11 @@ public class WorldBody implements Disposable {
     }
 
     public void applyForceToCenter(Vector2 force, boolean wake) {
-        body.applyForceToCenter(force, wake);
+        body.applyForceToCenter(world.toBox(force), wake);
+    }
+
+    public void applyImpulseToCenter(Vector2 impulse, boolean wake) {
+        body.applyLinearImpulse(world.toBox(impulse), body.getWorldCenter(), wake);
     }
 
     /**
@@ -37,8 +41,22 @@ public class WorldBody implements Disposable {
         }
     }
 
+    public boolean containsFixture(Fixture fixture) {
+        return body.getFixtureList().contains(fixture, true);
+    }
+
+    /**
+     * Calls {@link Fixture#setFriction} on all body {@link Fixture}s.
+     * @param friction
+     */
+    public void setFriction(float friction) {
+        for(Fixture fixture : body.getFixtureList()) {
+            fixture.setFriction(1);
+        }
+    }
+
     public void setPosition(Vector2 position) {
-        body.setTransform(world.toBox(position), body.getAngle());
+        body.setTransform(world.toBox(position.x), world.toBox(position.y), body.getAngle());
     }
 
     public Vector2 getPosition() {
@@ -46,7 +64,7 @@ public class WorldBody implements Disposable {
     }
 
     public void setLinearVelocity(Vector2 velocity) {
-        body.setLinearVelocity(world.toBox(velocity));
+        body.setLinearVelocity(world.toBox(velocity.x), world.toBox(velocity.y));
     }
 
     public Vector2 getLinearVelocity() {
