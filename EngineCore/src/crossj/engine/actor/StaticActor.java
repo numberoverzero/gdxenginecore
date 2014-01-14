@@ -2,10 +2,11 @@ package crossj.engine.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import crossj.engine.objects.Tracker;
-import crossj.engine.util.Math;
 
 /**
  * Actor with a single, static texture.
@@ -13,9 +14,11 @@ import crossj.engine.util.Math;
  */
 public class StaticActor implements Actor {
     private final Texture texture;
-    private final Vector2 origin;
+    private final TextureRegion region;
+    private final Vector2 origin, renderPosition;
     private final Tracker tracker;
     private final float width, height;
+    private final float rotation;
     private boolean enabled;
 
     public StaticActor(Texture texture) {
@@ -23,22 +26,34 @@ public class StaticActor implements Actor {
     }
 
     public StaticActor(Texture texture, float x, float y) {
-        this(texture, x, y, texture.getWidth(), texture.getHeight());
+        this(texture, x, y, texture.getWidth(), texture.getHeight(), 0);
     }
 
-    public StaticActor(Texture texture, float x, float y, float width, float height) {
+    public StaticActor(Texture texture, Vector2 position, Vector2 dimensions) {
+        this(texture, position, dimensions, 0);
+    }
+
+    public StaticActor(Texture texture, Vector2 position, Vector2 dimensions, float rotation) {
+        this(texture, position.x, position.y, dimensions.x, dimensions.y, rotation);
+    }
+
+    public StaticActor(Texture texture, float x, float y, float width, float height, float rotation) {
         this.texture = texture;
-        tracker = new Tracker();
-        tracker.track(new Vector2(x, y));
-        origin = new Vector2(0, 0);
         this.width = width;
         this.height = height;
+        this.rotation = rotation;
+
+        region = new TextureRegion(texture);
+        tracker = new Tracker();
+        tracker.track(new Vector2(x, y));
+        origin = Vector2.Zero.cpy();
+        renderPosition = Vector2.Zero.cpy();
         enabled = true;
     }
 
     @Override
     public void setOrigin(Vector2 origin) {
-        this.origin.set(Math.constrain(origin.cpy(), 0, 1));
+        this.origin.set(origin).scl(width, height);
     }
 
     @Override
@@ -51,9 +66,9 @@ public class StaticActor implements Actor {
         if (!isEnabled()) {
             return;
         }
-        Vector2 position = tracker.getPosition();
-        spriteBatch.draw(texture, position.x - origin.x * texture.getWidth(),
-                position.y - origin.y * texture.getHeight(), width, height);
+        renderPosition.set(tracker.getPosition()).sub(origin);
+        spriteBatch.draw(region, renderPosition.x, renderPosition.y, origin.x, origin.y, width, height, 1, 1, rotation
+                * MathUtils.radiansToDegrees);
     }
 
     @Override
