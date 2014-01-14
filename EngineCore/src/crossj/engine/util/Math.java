@@ -1,5 +1,8 @@
 package crossj.engine.util;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+
 public class Math {
     public static int max(int a, int b) {
         return a > b ? a : b;
@@ -25,6 +28,14 @@ public class Math {
         return max(a, min(b, v));
     }
 
+    public static Vector2 constrain(Vector2 v, float a, float b) {
+        return v.set(constrain(v.x, a, b), constrain(v.y, a, b));
+    }
+
+    public static Vector2 constrain(Vector2 v, Vector2 a, Vector2 b) {
+        return v.set(constrain(v.x, a.x, b.x), constrain(v.y, a.y, b.y));
+    }
+
     public static int mod(int v, int max) {
         return (v % max + max) % max;
     }
@@ -36,5 +47,17 @@ public class Math {
     public static int wrap(int v, int min, int max) {
         // Normalize all calculations by subtracting min
         return (min == max) ? max : mod((v - min), (max - min)) + min;
+    }
+
+    public static float lerp(float t, float v0, float v1) {
+        return v0 + t * (v1 - v0);
+    }
+
+    public static Vector2 randomVector2(float min, float max) {
+        return randomVector2(min, max, min, max);
+    }
+
+    public static Vector2 randomVector2(float minX, float maxX, float minY, float maxY) {
+        return new Vector2(MathUtils.random(minX, maxX), MathUtils.random(minY, maxY));
     }
 }
