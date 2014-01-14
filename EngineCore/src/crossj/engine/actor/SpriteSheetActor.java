@@ -12,7 +12,8 @@ import crossj.engine.util.Math;
 public class SpriteSheetActor implements Actor {
     private final Texture texture;
     private final Animation animation;
-    private final Vector2 position, origin;
+    private final Vector2 origin;
+    private final Tracker tracker;
     private final float width, height;
     private boolean enabled;
     private float stateTime;
@@ -26,7 +27,6 @@ public class SpriteSheetActor implements Actor {
             int height) {
         animation = Graphics.fromSpriteSheet(texture, 1 / fps, frameColumns, frameRows);
         animation.setPlayMode(playMode);
-        position = new Vector2(0, 0);
         origin = new Vector2(0, 0);
 
         this.width = width;
@@ -34,6 +34,7 @@ public class SpriteSheetActor implements Actor {
         this.texture = texture;
         stateTime = 0;
         enabled = true;
+        tracker = new Tracker();
     }
 
     @Override
@@ -58,6 +59,7 @@ public class SpriteSheetActor implements Actor {
         }
         stateTime += delta;
         TextureRegion frame = animation.getKeyFrame(stateTime);
+        Vector2 position = tracker.getPosition();
         spriteBatch.draw(frame, position.x - origin.x * frame.getRegionWidth(),
                 position.y - origin.y * frame.getRegionHeight(), width, height);
     }
@@ -68,17 +70,12 @@ public class SpriteSheetActor implements Actor {
     }
 
     @Override
-    public void setPosition(Vector2 position) {
-        this.position.set(position);
-    }
-
-    @Override
-    public Vector2 getPosition() {
-        return position;
-    }
-
-    @Override
     public void reset() {
         stateTime = 0f;
+    }
+
+    @Override
+    public Tracker getTracker() {
+        return tracker;
     }
 }

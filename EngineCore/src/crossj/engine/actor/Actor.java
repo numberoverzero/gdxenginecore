@@ -4,6 +4,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
+import crossj.engine.objects.GameObject;
+import crossj.engine.objects.Unit;
+
 public interface Actor extends Disposable {
 
     void setEnabled(boolean enabled);
@@ -12,11 +15,21 @@ public interface Actor extends Disposable {
 
     void act(SpriteBatch spriteBatch, float delta);
 
+    /**
+     * Set the offset for rendering the actor against the position it is
+     * tracking (or locked at)
+     *
+     * @param origin
+     */
     void setOrigin(Vector2 origin);
 
-    void setPosition(Vector2 position);
-
-    Vector2 getPosition();
+    /**
+     * The tracking object which the actor should render against. For a
+     * {@link Unit}, this is usually the unit itself (
+     * {@link Tracker#track(GameObject)}), which results in the actor tracking
+     * the physics object (or whatever {@link Unit#getPosition()} returns).
+     */
+    Tracker getTracker();
 
     void reset();
 }

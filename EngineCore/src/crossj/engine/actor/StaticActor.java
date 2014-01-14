@@ -12,7 +12,8 @@ import crossj.engine.util.Math;
  */
 public class StaticActor implements Actor {
     private final Texture texture;
-    private final Vector2 position, origin;
+    private final Vector2 origin;
+    private final Tracker tracker;
     private final float width, height;
     private boolean enabled;
 
@@ -26,7 +27,8 @@ public class StaticActor implements Actor {
 
     public StaticActor(Texture texture, float x, float y, float width, float height) {
         this.texture = texture;
-        position = new Vector2(x, y);
+        tracker = new Tracker();
+        tracker.track(new Vector2(x, y));
         origin = new Vector2(0, 0);
         this.width = width;
         this.height = height;
@@ -48,18 +50,9 @@ public class StaticActor implements Actor {
         if (!isEnabled()) {
             return;
         }
+        Vector2 position = tracker.getPosition();
         spriteBatch.draw(texture, position.x - origin.x * texture.getWidth(),
                 position.y - origin.y * texture.getHeight(), width, height);
-    }
-
-    @Override
-    public void setPosition(Vector2 position) {
-        this.position.set(position);
-    }
-
-    @Override
-    public Vector2 getPosition() {
-        return position;
     }
 
     @Override
@@ -75,5 +68,10 @@ public class StaticActor implements Actor {
     @Override
     public void reset() {
         // no-op for static sprite
+    }
+
+    @Override
+    public Tracker getTracker() {
+        return tracker;
     }
 }
