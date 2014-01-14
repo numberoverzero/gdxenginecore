@@ -27,6 +27,7 @@ public abstract class Screen2D implements Screen {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
         camera = new OrthographicCamera(w, h);
+        camera.setToOrtho(false);
         spriteBatch = new SpriteBatch();
         eventDispatcher = new EventDispatcher();
         inputProcessor = new InputProcessorAdapter() {
