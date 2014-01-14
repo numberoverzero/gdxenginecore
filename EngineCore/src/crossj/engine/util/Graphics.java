@@ -1,5 +1,8 @@
 package crossj.engine.util;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -24,5 +27,20 @@ public class Graphics {
         Vector3 position = new Vector3(x, y, 0);
         camera.unproject(position);
         return position;
+    }
+
+    public static Texture pixel(float r, float g, float b) {
+        return pixel(r, g, b, 1);
+    }
+
+    public static Texture pixel(float r, float g, float b, float a) {
+        return pixel(new Color(r, g, b, a));
+    }
+
+    public static Texture pixel(Color color) {
+        Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
+        pixmap.setColor(color);
+        pixmap.fill();
+        return new Texture(pixmap, pixmap.getFormat(), false);
     }
 }

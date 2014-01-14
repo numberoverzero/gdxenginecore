@@ -37,8 +37,10 @@ public class Math {
     }
 
     public static float angle(Vector2 v1, Vector2 v2) {
-        float degrees = new Vector2(v2).sub(v1).angle();
-        return degrees * MathUtils.degreesToRadians;
+        return angleDeg(v1, v2) * MathUtils.degreesToRadians;
+    }
+    public static float angleDeg(Vector2 v1, Vector2 v2) {
+        return new Vector2(v2).sub(v1).angle();
     }
 
     public static Vector2 midpoint(Vector2 v1, Vector2 v2) {
