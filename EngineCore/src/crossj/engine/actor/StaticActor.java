@@ -8,7 +8,7 @@ import crossj.engine.util.Math;
 
 /**
  * Actor with a single, static texture.
- * 
+ *
  */
 public class StaticActor implements Actor {
     private final Texture texture;
@@ -34,10 +34,8 @@ public class StaticActor implements Actor {
     }
 
     @Override
-    public void setOrigin(float x, float y) {
-        origin.set(
-                Math.constrain(x, 0, 1),
-                Math.constrain(y, 0, 1));
+    public void setOrigin(Vector2 origin) {
+        this.origin.set(Math.constrain(origin.cpy(), 0, 1));
     }
 
     @Override
@@ -50,17 +48,13 @@ public class StaticActor implements Actor {
         if (!isEnabled()) {
             return;
         }
-        spriteBatch.draw(texture, position.x - origin.x * texture.getWidth(), position.y - origin.y * texture.getHeight(), width, height);
+        spriteBatch.draw(texture, position.x - origin.x * texture.getWidth(),
+                position.y - origin.y * texture.getHeight(), width, height);
     }
 
     @Override
     public void setPosition(Vector2 position) {
-        setPosition(position.x, position.y);
-    }
-
-    @Override
-    public void setPosition(float x, float y) {
-        position.set(x, y);
+        this.position.set(position);
     }
 
     @Override

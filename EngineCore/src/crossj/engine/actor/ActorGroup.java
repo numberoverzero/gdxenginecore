@@ -20,24 +20,13 @@ public class ActorGroup implements Actor {
      * Add an actor to the group. offset is the delta from the group's current
      * position. When the group's position is updated, the actor's position will
      * be adjusted to maintain the desired offset.
-     * 
+     *
      * @param actor
      * @param offset
      */
     public void add(Actor actor, Vector2 offset) {
-        add(actor, offset.x, offset.y);
-    }
-
-    /**
-     * See {@link #add(Actor, Vector2)}
-     * 
-     * @param actor
-     * @param offsetX
-     * @param offsetY
-     */
-    public void add(Actor actor, float offsetX, float offsetY) {
         actors.add(actor);
-        actor.setPosition(actor.getPosition().set(position).add(offsetX, offsetY));;
+        actor.setPosition(actor.getPosition().set(position).add(offset));
     }
 
     public boolean remove(Actor actor) {
@@ -76,23 +65,18 @@ public class ActorGroup implements Actor {
     }
 
     @Override
-    public void setOrigin(float x, float y) {
+    public void setOrigin(Vector2 origin) {
         // no-op since each actor maintains its own offset from the render
         // position
     }
 
     @Override
     public void setPosition(Vector2 position) {
-        setPosition(position.x, position.y);
-    }
-
-    @Override
-    public void setPosition(float x, float y) {
-        Vector2 delta = new Vector2(x, y).sub(position);
+        Vector2 delta = new Vector2(position).sub(this.position);
         for (Actor actor : actors) {
             actor.setPosition(actor.getPosition().add(delta));
         }
-        position.set(x, y);
+        this.position.set(position);
     }
 
     @Override

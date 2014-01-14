@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import crossj.engine.util.Graphics;
+import crossj.engine.util.Math;
 
 public class SpriteSheetActor implements Actor {
     private final Texture texture;
@@ -62,18 +63,13 @@ public class SpriteSheetActor implements Actor {
     }
 
     @Override
-    public void setOrigin(float x, float y) {
-        origin.set(x, y);
+    public void setOrigin(Vector2 origin) {
+        this.origin.set(Math.constrain(origin.cpy(), 0, 1));
     }
 
     @Override
     public void setPosition(Vector2 position) {
-        setPosition(position.x, position.y);
-    }
-
-    @Override
-    public void setPosition(float x, float y) {
-        position.set(x, y);
+        this.position.set(position);
     }
 
     @Override

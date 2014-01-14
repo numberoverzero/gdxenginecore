@@ -12,9 +12,7 @@ public interface Actor extends Disposable {
 
     void act(SpriteBatch spriteBatch, float delta);
 
-    void setOrigin(float x, float y);
-
-    void setPosition(float x, float y);
+    void setOrigin(Vector2 origin);
 
     void setPosition(Vector2 position);
 
