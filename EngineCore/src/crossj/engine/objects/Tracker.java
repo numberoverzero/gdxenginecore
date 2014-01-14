@@ -1,8 +1,6 @@
-package crossj.engine.actor;
+package crossj.engine.objects;
 
 import com.badlogic.gdx.math.Vector2;
-
-import crossj.engine.objects.GameObject;
 
 /**
  * Controls tracking, locking, and interpolating between targets
