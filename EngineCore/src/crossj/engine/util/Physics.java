@@ -51,18 +51,18 @@ public class Physics {
         return body;
     }
 
-    public static WorldBody createStaticRectangle(World world, Vector2 dimensions, Vector2 position) {
-        staticBodyDef.position.set(world.toBox(position));
+    public static WorldBody createStaticRectangle(World world, Vector2 dimensions, Vector2 center) {
+        staticBodyDef.position.set(world.toBox(center));
         WorldBody body = world.createBody(staticBodyDef);
         rectangleShape.setAsBox(world.toBox(dimensions.x) / 2, world.toBox(dimensions.y) / 2);
         body.getBox2DBody().createFixture(rectangleShape, 0.0f);
         return body;
     }
 
-    public static WorldBody createStaticRectangle(World world, Vector2 dimensions, Vector2 position, float angle) {
-        staticBodyDef.position.set(world.toBox(position));
+    public static WorldBody createStaticRectangle(World world, Vector2 dimensions, Vector2 center, float angle) {
+        staticBodyDef.position.set(world.toBox(center));
         WorldBody body = world.createBody(staticBodyDef);
-        rectangleShape.setAsBox(world.toBox(dimensions.x) / 2, world.toBox(dimensions.y) / 2, world.toBox(position),
+        rectangleShape.setAsBox(world.toBox(dimensions.x) / 2, world.toBox(dimensions.y) / 2, world.toBox(center),
                 angle);
         body.getBox2DBody().createFixture(rectangleShape, 0.0f);
         return body;
