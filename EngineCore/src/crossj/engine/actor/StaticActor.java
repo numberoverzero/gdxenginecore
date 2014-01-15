@@ -33,8 +33,8 @@ public class StaticActor implements Actor {
         this(texture, position, dimensions, 0);
     }
 
-    public StaticActor(Texture texture, Vector2 position, Vector2 dimensions, float rotation) {
-        this(texture, position.x, position.y, dimensions.x, dimensions.y, rotation);
+    public StaticActor(Texture texture, Vector2 center, Vector2 dimensions, float rotation) {
+        this(texture, center.x, center.y, dimensions.x, dimensions.y, rotation);
     }
 
     public StaticActor(Texture texture, float x, float y, float width, float height, float rotation) {
