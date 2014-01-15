@@ -16,14 +16,14 @@ public class Unit extends GameObject {
         this.actor = actor;
         this.body = body;
         this.mover = mover;
+
+        if (actor != null && body != null) {
+            actor.getTracker().track(this);
+        }
     }
 
     public Actor getActor() {
         return actor;
-    }
-
-    private WorldBody getBody() {
-        return body;
     }
 
     public Mover getMover() {
@@ -34,15 +34,16 @@ public class Unit extends GameObject {
     public void dispose() {
         super.dispose();
         actor.dispose();
+        body.dispose();
     }
 
     @Override
     public Vector2 getPosition() {
-        return body.getPosition();
+        return mover.getPosition();
     }
 
     public void setPosition(Vector2 position) {
-        body.setPosition(position);
+        mover.setPosition(position);
     }
 
 }

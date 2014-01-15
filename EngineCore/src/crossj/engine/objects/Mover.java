@@ -40,8 +40,7 @@ public class Mover {
         body.setPosition(position);
     }
 
-    public void jitter() {
-        body.setLinearVelocity(Vector2.Zero);
-        body.setLinearVelocity(netForce);
+    public Vector2 getPosition() {
+        return body.getPosition();
     }
 }
