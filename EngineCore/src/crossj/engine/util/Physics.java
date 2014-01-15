@@ -60,12 +60,15 @@ public class Physics {
     }
 
     public static WorldBody createStaticRectangle(World world, Vector2 dimensions, Vector2 center, float angle) {
-        staticBodyDef.position.set(world.toBox(center));
+        throw new RuntimeException("Non-axis-aligned rectangles are slightly misaligned.  Try calling this method with angle=0 to see.");
+        /*
+        world.toBox(center);
+        staticBodyDef.position.set(center);
         WorldBody body = world.createBody(staticBodyDef);
-        rectangleShape.setAsBox(world.toBox(dimensions.x) / 2, world.toBox(dimensions.y) / 2, world.toBox(center),
-                angle);
+        rectangleShape.setAsBox(world.toBox(dimensions.x) / 2, world.toBox(dimensions.y) / 2, center, angle);
         body.getBox2DBody().createFixture(rectangleShape, 0.0f);
         return body;
+        */
     }
 
     public static List<WorldBody> createContainer(World world, float wallThickness, Vector2 dimensions, Vector2 center) {

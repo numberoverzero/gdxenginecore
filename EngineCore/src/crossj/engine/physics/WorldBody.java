@@ -51,7 +51,7 @@ public class WorldBody implements Disposable {
      */
     public void setFriction(float friction) {
         for(Fixture fixture : body.getFixtureList()) {
-            fixture.setFriction(1);
+            fixture.setFriction(friction);
         }
     }
 
@@ -81,6 +81,10 @@ public class WorldBody implements Disposable {
 
     public Body getBox2DBody() {
         return body;
+    }
+
+    public World getWorld() {
+        return world;
     }
 
 }
