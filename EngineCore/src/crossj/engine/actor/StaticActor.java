@@ -2,11 +2,10 @@ package crossj.engine.actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import crossj.engine.objects.Tracker;
+import crossj.engine.util.Graphics;
 
 /**
  * Actor with a single, static texture.
@@ -14,10 +13,8 @@ import crossj.engine.objects.Tracker;
  */
 public class StaticActor implements Actor {
     private final Texture texture;
-    private final TextureRegion region;
-    private final Vector2 origin, renderPosition;
+    private final Vector2 origin, position, dimensions;
     private final Tracker tracker;
-    private final float width, height;
     private final float rotation;
     private boolean enabled;
 
@@ -39,21 +36,20 @@ public class StaticActor implements Actor {
 
     public StaticActor(Texture texture, float x, float y, float width, float height, float rotation) {
         this.texture = texture;
-        this.width = width;
-        this.height = height;
         this.rotation = rotation;
 
-        region = new TextureRegion(texture);
         tracker = new Tracker();
         tracker.track(new Vector2(x, y));
-        origin = Vector2.Zero.cpy();
-        renderPosition = Vector2.Zero.cpy();
+
+        dimensions = new Vector2(width, height);
+        origin = new Vector2();
+        position = new Vector2();
         enabled = true;
     }
 
     @Override
     public void setOrigin(Vector2 origin) {
-        this.origin.set(origin).scl(width, height);
+        this.origin.set(origin).scl(dimensions);
     }
 
     @Override
@@ -66,9 +62,8 @@ public class StaticActor implements Actor {
         if (!isEnabled()) {
             return;
         }
-        renderPosition.set(tracker.getPosition()).sub(origin);
-        spriteBatch.draw(region, renderPosition.x, renderPosition.y, origin.x, origin.y, width, height, 1, 1, rotation
-                * MathUtils.radiansToDegrees);
+        position.set(tracker.getPosition()).sub(origin);
+        Graphics.draw(spriteBatch, texture, position, origin, dimensions, rotation);
     }
 
     @Override
