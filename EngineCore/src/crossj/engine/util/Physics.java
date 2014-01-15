@@ -43,6 +43,14 @@ public class Physics {
         return body;
     }
 
+    public static WorldBody createStaticCircle(World world, float radius, Vector2 position) {
+        staticBodyDef.position.set(world.toBox(position));
+        WorldBody body = world.createBody(staticBodyDef);
+        circleShape.setRadius(world.toBox(radius));
+        body.getBox2DBody().createFixture(circleFixtureDef);
+        return body;
+    }
+
     public static WorldBody createDynamicRectangle(World world, Vector2 dimensions, Vector2 position) {
         dynamicBodyDef.position.set(world.toBox(position));
         WorldBody body = world.createBody(dynamicBodyDef);
