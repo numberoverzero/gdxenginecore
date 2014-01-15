@@ -9,17 +9,25 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.utils.Disposable;
+
+import crossj.engine.physics.raycasting.FurthestRayCastCallback;
+import crossj.engine.physics.raycasting.NearestRayCastCallback;
+import crossj.engine.physics.raycasting.RayCastResult;
+import crossj.engine.physics.raycasting.RayCasting;
 
 public class World implements Disposable {
     private static final float DEFAULT_BOX_STEP = 1 / 60f;
-    private static final int DEFAULT_BOX_VELOCITY_ITERATIONS = 6;
-    private static final int DEFAULT_BOX_POSITION_ITERATIONS = 2;
+    private static final int DEFAULT_BOX_VELOCITY_ITERATIONS = 8;
+    private static final int DEFAULT_BOX_POSITION_ITERATIONS = 3;
     private static final float DEFAULT_WORLD_TO_BOX = 0.01f;
     private static final float DEFAULT_BOX_TO_WORLD = 100f;
 
     private final float step, worldToBox, boxToWorld;
     private final int velocityIterations, positionIterations;
+    private final Vector2 tmp1, tmp2;
+
     private Box2DDebugRenderer debugRenderer;
 
     com.badlogic.gdx.physics.box2d.World world;
@@ -39,6 +47,8 @@ public class World implements Disposable {
         velocityIterations = DEFAULT_BOX_VELOCITY_ITERATIONS;
         positionIterations = DEFAULT_BOX_POSITION_ITERATIONS;
         managedBodies = new ArrayList<>();
+        tmp1 = new Vector2();
+        tmp2 = new Vector2();
     }
 
     public void setContactListener(ContactListener listener) {
@@ -130,6 +140,27 @@ public class World implements Disposable {
 
     public void debugRender(Camera camera) {
         getDebugRenderer().render(getBox2DWorld(), camera.combined.cpy().scl(toWorldScale()));
+    }
+
+    public RayCastResult rayCast(Vector2 point1, Vector2 point2, RayCasting type) {
+        RayCastResult result = new RayCastResult(point1, point2);
+        toBox(tmp1.set(point1));
+        toBox(tmp2.set(point2));
+
+        RayCastCallback callback;
+        switch (type) {
+        case Nearest:
+            callback = new NearestRayCastCallback(result);
+            break;
+        case Furthest:
+            callback = new FurthestRayCastCallback(result);
+            break;
+        default:
+            throw new RuntimeException("Unknown RayCasting type '" + type + "'.");
+        }
+
+        world.rayCast(callback, tmp1, tmp2);
+        return result.scl(toWorldScale());
     }
 
     /**
