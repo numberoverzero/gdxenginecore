@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 
 import crossj.engine.event.EventDispatcher;
 import crossj.engine.fonts.TTFontCache;
@@ -34,8 +34,11 @@ public abstract class Screen2D implements Screen, InputProcessor{
         debugFont = fonts.get("open-sans", 18);
     }
 
+    /**
+     * Screens should usually handle drawing in the draw function.
+     */
     @Override
-    public final void render(float delta) {
+    public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -49,7 +52,7 @@ public abstract class Screen2D implements Screen, InputProcessor{
 
     protected abstract void draw(float delta);
     private void renderDebugInfo(float delta) {
-        Vector3 position = Graphics.screenToCamera(camera, 0, 0);
+        Vector2 position = Graphics.unproject(camera, 0, 0);
         String text = "Screen: " + debugName + "\n"
                 + "FPS: " + Gdx.graphics.getFramesPerSecond();
 
