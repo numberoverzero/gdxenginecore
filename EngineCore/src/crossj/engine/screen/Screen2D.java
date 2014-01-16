@@ -12,7 +12,7 @@ import crossj.engine.event.EventDispatcher;
 import crossj.engine.fonts.TTFontCache;
 import crossj.engine.util.Graphics;
 
-public abstract class Screen2D implements Screen, InputProcessor{
+public abstract class Screen2D implements Screen, InputProcessor {
     protected final EventDispatcher eventDispatcher;
     protected final OrthographicCamera camera;
     protected final SpriteBatch spriteBatch;
@@ -20,8 +20,16 @@ public abstract class Screen2D implements Screen, InputProcessor{
     protected final TTFontCache fonts;
     protected final BitmapFont debugFont;
 
+    public Screen2D() {
+        this(null);
+    }
+
     public Screen2D(String debugName) {
-        this.debugName = debugName;
+        if (debugName == null) {
+            this.debugName = this.getClass().getSimpleName();
+        } else {
+            this.debugName = debugName;
+        }
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
         camera = new OrthographicCamera(w, h);
@@ -51,10 +59,10 @@ public abstract class Screen2D implements Screen, InputProcessor{
     }
 
     protected abstract void draw(float delta);
+
     private void renderDebugInfo(float delta) {
         Vector2 position = Graphics.unproject(camera, 0, 0);
-        String text = "Screen: " + debugName + "\n"
-                + "FPS: " + Gdx.graphics.getFramesPerSecond();
+        String text = "Screen: " + debugName + "\n" + "FPS: " + Gdx.graphics.getFramesPerSecond();
 
         spriteBatch.begin();
         debugFont.drawMultiLine(spriteBatch, text, position.x, position.y);
