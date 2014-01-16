@@ -4,6 +4,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
 public class RayCastResult {
+
+    /**
+     * Whether the result is non-null. Useful for re-using result objects - this
+     * should be checked first, since the fixture may be non-null from a
+     * previous search, but the latest search never updated it.
+     */
+    public boolean hasValue = false;
+
     /**
      * The fixture that intersected the ray, filtered by some criteria
      */
@@ -12,28 +20,28 @@ public class RayCastResult {
     /**
      * The point at which the fixture and ray intersected
      */
-    public Vector2 point = new Vector2();
+    public final Vector2 point = new Vector2();
 
     /**
      * The normal from the center of the fixture intersected towards the point
      * of intersection
      */
-    public Vector2 normal = new Vector2();
+    public final Vector2 normal = new Vector2();
 
     /**
      * The starting point of the ray
      */
-    public Vector2 start = new Vector2();
+    public final Vector2 start = new Vector2();
 
     /**
      * The ending point of the ray
      */
-    public Vector2 end = new Vector2();
+    public final Vector2 end = new Vector2();
 
     /**
      * The fraction of the distance along the ray of the intersection
      */
-    public float fraction;
+    public float fraction = 0;
 
     public RayCastResult() {
 
@@ -48,28 +56,22 @@ public class RayCastResult {
         update(other);
     }
 
-    public RayCastResult(Vector2 start, Vector2 end, Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-        update(start, end, fixture, point, normal, fraction);
+    public void update(RayCastResult other) {
+        start.set(other.start);
+        end.set(other.end);
+        fixture = other.fixture;
+        point.set(other.point);
+        normal.set(other.normal);
+        fraction = other.fraction;
+        hasValue = other.hasValue;
     }
 
-    public void update(RayCastResult other) {
-        update(other.start, other.end, other.fixture, other.point, other.normal, other.fraction);
-    }
 
     /**
      * Useful for dumping a raycast callback in an interative fashion, where
      * start/end do not change
      */
     public void update(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-        this.fixture = fixture;
-        this.point.set(point);
-        this.normal.set(normal);
-        this.fraction = fraction;
-    }
-
-    public void update(Vector2 start, Vector2 end, Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-        this.start.set(start);
-        this.end.set(end);
         this.fixture = fixture;
         this.point.set(point);
         this.normal.set(normal);

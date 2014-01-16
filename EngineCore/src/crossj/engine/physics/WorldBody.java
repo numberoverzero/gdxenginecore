@@ -16,6 +16,7 @@ public class WorldBody implements Disposable {
     public WorldBody(Body body, World world) {
         this.world = world;
         this.body = body;
+        body.setUserData(this);
     }
 
     @Override
@@ -33,24 +34,22 @@ public class WorldBody implements Disposable {
 
     /**
      * Calls {@link Fixture#setRestitution} on all body {@link Fixture}s.
+     *
      * @param restitution
      */
     public void setRestitution(float restitution) {
-        for(Fixture fixture : body.getFixtureList()) {
+        for (Fixture fixture : body.getFixtureList()) {
             fixture.setRestitution(restitution);
         }
     }
 
-    public boolean containsFixture(Fixture fixture) {
-        return body.getFixtureList().contains(fixture, true);
-    }
-
     /**
      * Calls {@link Fixture#setFriction} on all body {@link Fixture}s.
+     *
      * @param friction
      */
     public void setFriction(float friction) {
-        for(Fixture fixture : body.getFixtureList()) {
+        for (Fixture fixture : body.getFixtureList()) {
             fixture.setFriction(friction);
         }
     }
@@ -85,6 +84,17 @@ public class WorldBody implements Disposable {
 
     public World getWorld() {
         return world;
+    }
+
+    /**
+     * True if the fixture's body's user-data is this
+     *
+     * @param fixture
+     * @return
+     */
+    public boolean contains(Fixture fixture) {
+        Body fBody = fixture.getBody();
+        return fBody == null ? false : equals(fBody.getUserData());
     }
 
 }
