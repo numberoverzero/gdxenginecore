@@ -47,6 +47,15 @@ public class Math {
         return new Vector2((v2.x + v1.x) / 2, (v2.y + v1.y) / 2);
     }
 
+    /**
+     * Absolute value of both directions
+     * @param v
+     * @return The vector for chaining
+     */
+    public static Vector2 abs(Vector2 v) {
+        return v.set(v.x < 0 ? -v.x : v.x, v.y < 0 ? -v.y : v.y);
+    }
+
     public static int mod(int v, int max) {
         return (v % max + max) % max;
     }
