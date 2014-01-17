@@ -8,7 +8,7 @@ import crossj.engine.physics.WorldBody;
 
 public class Unit extends GameObject {
     private final Actor actor;
-    private final WorldBody body;
+    private WorldBody body;
     private final Mover mover;
 
     public Unit(EventDispatcher dispatcher, Actor actor, WorldBody body, Mover mover) {
@@ -20,6 +20,10 @@ public class Unit extends GameObject {
         if (actor != null && body != null) {
             actor.getTracker().track(this);
         }
+    }
+
+    public void setBody(WorldBody body) {
+        this.body = body;
     }
 
     public Actor getActor() {
