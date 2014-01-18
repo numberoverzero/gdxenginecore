@@ -37,7 +37,7 @@ public class EventPool implements Disposable {
     public EventPool(int size, Behavior behavior) {
         pools = new HashMap<>();
         if (size < 1) {
-            throw new IllegalArgumentException("Pool size must be > 0");
+            throw new IllegalArgumentException("Pool must have positive non-zero size, was " + size);
         }
         this.size = size;
         this.behavior = behavior;
@@ -90,6 +90,9 @@ public class EventPool implements Disposable {
         protected T firstAvailable;
 
         public Pool(int size, Callable<T> factory) {
+            if (size < 1) {
+                throw new IllegalArgumentException("Pool must have positive non-zero size, was " + size);
+            }
             this.factory = factory;
             events = new ArrayList<>();
             for (int i = 0; i < size; i++) {
@@ -99,8 +102,8 @@ public class EventPool implements Disposable {
                     events.get(i - 1).setPoolNext(event);
                 }
             }
-            events.get(size - 1).setPoolNext(null);
             firstAvailable = events.get(0);
+            events.get(size - 1).setPoolNext(events.get(0));
         }
 
         protected abstract T acquire();
@@ -135,7 +138,7 @@ public class EventPool implements Disposable {
 
         @Override
         public void dispose() {
-            for(T event : events) {
+            for (T event : events) {
                 event.dispose();
             }
             events.clear();
@@ -161,19 +164,8 @@ public class EventPool implements Disposable {
 
         @Override
         protected T acquire() {
-            switch (behavior) {
-            case NULL:
-                if (firstAvailable == null || firstAvailable.isActive()) {
-                    return null;
-                }
-                break;
-            case DESTROY:
-                if (firstAvailable == null) {
-                    throw new RuntimeException("StaticPool(DESTROY) found null Event");
-                }
-                break;
-            default:
-                throw new RuntimeException("Static pools only support DESTROY or NULL behavior");
+            if (Behavior.NULL.equals(behavior) && firstAvailable.isActive()) {
+                return null;
             }
             return advance();
         }
@@ -186,7 +178,7 @@ public class EventPool implements Disposable {
 
         @Override
         protected T acquire() {
-            if (firstAvailable == null || firstAvailable.isActive()) {
+            if (firstAvailable.isActive()) {
                 // Create a new event and release it, setting it to
                 // firstAvailable
                 release(create());
@@ -197,7 +189,7 @@ public class EventPool implements Disposable {
 
     @Override
     public void dispose() {
-        for(Pool<? extends Event<?>> pool : pools.values()) {
+        for (Pool<? extends Event<?>> pool : pools.values()) {
             pool.dispose();
         }
         pools.clear();
