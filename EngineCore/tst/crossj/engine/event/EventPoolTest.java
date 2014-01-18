@@ -17,6 +17,7 @@ public class EventPoolTest {
 
     private class TestEvent extends BasicPoolEvent<Object> {
         public int value = 0;
+        public boolean resetWhileActive = false;
 
         @Override
         public boolean notify(Object listener) {
@@ -26,6 +27,9 @@ public class EventPoolTest {
         @Override
         public void reset() {
             value = 0;
+            if (isActive()) {
+                resetWhileActive = true;
+            }
         }
     }
 
@@ -114,6 +118,31 @@ public class EventPoolTest {
         for (int i = 0; i < POOL_SIZE; i++) {
             assert 0 == pool.acquire(TestEvent.class).value;
         }
+    }
 
+    @Test
+    public void testDynamicPoolExpands() {
+        pool = new EventPool(POOL_SIZE, Behavior.EXPAND);
+        pool.addType(TestEvent.class, factory);
+        // Exhaust the pool
+        for (int i = 0; i < POOL_SIZE; i++) {
+            pool.acquire(TestEvent.class);
+        }
+
+        TestEvent newEvent = pool.acquire(TestEvent.class);
+        assert POOL_SIZE + 1 == factoryCreatedEvents.size();
+        assert factoryCreatedEvents.get(POOL_SIZE + 1) == newEvent;
+    }
+
+    @Test
+    public void testStaticPoolDestroysActive() {
+        pool = new EventPool(POOL_SIZE, Behavior.DESTROY);
+        pool.addType(TestEvent.class, factory);
+        // Exhaust the pool
+        for (int i = 0; i < POOL_SIZE; i++) {
+            pool.acquire(TestEvent.class);
+        }
+
+        assert pool.acquire(TestEvent.class).resetWhileActive;
     }
 }

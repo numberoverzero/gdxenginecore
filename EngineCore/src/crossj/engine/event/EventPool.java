@@ -78,6 +78,10 @@ public class EventPool {
         ((Pool<T>) pools.get(event.getClass())).release(event);
     }
 
+    /**
+     * O(1) firstAvailable based on
+     * http://gameprogrammingpatterns.com/object-pool.html
+     */
     private abstract class Pool<T extends Event<?>> {
         private final Callable<T> factory;
         protected final List<T> events;
@@ -128,16 +132,18 @@ public class EventPool {
         }
     }
 
-    /**
-     * O(1) firstAvailable based on
-     * http://gameprogrammingpatterns.com/object-pool.html
-     */
     private class StaticPool<T extends Event<?>> extends Pool<T> {
         private final Behavior behavior;
 
         public StaticPool(int size, Behavior behavior, Callable<T> factory) {
             super(size, factory);
-            if (!(Behavior.DESTROY.equals(behavior) || Behavior.NULL.equals(behavior))) {
+            switch (behavior) {
+            case NULL:
+                break;
+            case DESTROY:
+                events.get(size - 1).setPoolNext(events.get(0));
+                break;
+            default:
                 throw new IllegalArgumentException("Static pools only support DESTROY or NULL behavior");
             }
             this.behavior = behavior;
@@ -145,13 +151,21 @@ public class EventPool {
 
         @Override
         protected T acquire() {
-            assert firstAvailable != null;
-
-            T event = firstAvailable;
-            if (!event.isActive() || Behavior.DESTROY.equals(behavior)) {
-                return advance();
+            switch (behavior) {
+            case NULL:
+                if (firstAvailable == null || firstAvailable.isActive()) {
+                    return null;
+                }
+                break;
+            case DESTROY:
+                if (firstAvailable == null) {
+                    throw new RuntimeException("StaticPool(DESTROY) found null Event");
+                }
+                break;
+            default:
+                throw new RuntimeException("Static pools only support DESTROY or NULL behavior");
             }
-            return null;
+            return advance();
         }
     }
 
