@@ -32,9 +32,14 @@ public class Modifier extends GameObject {
         gameObject.getEventDispatcher().notify(new ModifierEvent(gameObject, this, EventType.APPLIED));
     }
 
-    public void remove(GameObject gameObject) {
+    public void remove(GameObject gameObject, boolean notify, boolean dispose) {
         gameObject.getModifiers().remove(this);
-        gameObject.getEventDispatcher().notify(new ModifierEvent(gameObject, this, EventType.REMOVED));
+        if (notify) {
+            gameObject.getEventDispatcher().notify(new ModifierEvent(gameObject, this, EventType.REMOVED));
+        }
+        if(dispose) {
+            dispose();
+        }
     }
 
     public void setPercent(float newValue) {

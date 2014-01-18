@@ -35,8 +35,7 @@ public abstract class GameObject implements Disposable {
     @Override
     public void dispose() {
         while (!modifiers.isEmpty()) {
-            modifiers.get(0).remove(this);
-            ;
+            modifiers.get(0).remove(this, false, true);
         }
     }
 
