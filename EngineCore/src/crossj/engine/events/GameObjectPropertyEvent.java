@@ -1,14 +1,19 @@
 package crossj.engine.events;
 
-import crossj.engine.event.Event;
+import crossj.engine.event.BasicEvent;
 import crossj.engine.objects.GameObject;
 
-public class GameObjectPropertyEvent<T> implements Event<GameObjectListener> {
+public class GameObjectPropertyEvent<T> extends BasicEvent<GameObjectListener> {
 
-    private final GameObject gameObject;
-    private final String property;
-    private final T oldValue;
-    private final T newValue;
+    // No static setup here to add events to the global pool, since I can't
+    // figure out how to do that for a class with a type param. That's probably
+    // ok, since the EventPool may be an early optimization anyway. Or, this is
+    // too vague an event type anyway.
+
+    private GameObject gameObject;
+    private String property;
+    private T oldValue;
+    private T newValue;
 
     public GameObjectPropertyEvent(GameObject gameObject, String property, T oldValue, T newValue) {
         this.gameObject = gameObject;
@@ -20,6 +25,14 @@ public class GameObjectPropertyEvent<T> implements Event<GameObjectListener> {
     @Override
     public boolean notify(GameObjectListener listener) {
         return listener.onPropertyChanged(gameObject, property, oldValue, newValue);
+    }
+
+    @Override
+    public void reset() {
+        gameObject = null;
+        property = null;
+        oldValue = null;
+        newValue = null;
     }
 
 }

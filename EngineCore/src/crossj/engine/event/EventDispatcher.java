@@ -9,17 +9,25 @@ import java.util.List;
 import java.util.Map;
 
 public class EventDispatcher {
+    public static final EventDispatcher GLOBAL = new EventDispatcher();
+
     @SuppressWarnings("rawtypes")
     private final Map<Class<? extends Event>, List> listeners;
+    private final EventPool pool;
 
     public EventDispatcher() {
+        this(EventPool.GLOBAL);
+    }
+
+    public EventDispatcher(EventPool pool) {
         listeners = new HashMap<>();
+        this.pool = pool;
     }
 
     /**
      * Add a listener to the list of listeners that receives events of the given
      * type
-     * 
+     *
      * @param eventClass
      *            The type of event to start listening to
      * @param listener
@@ -37,7 +45,7 @@ public class EventDispatcher {
     /**
      * Remove a listener from the list of listeners that receives events of the
      * given type
-     * 
+     *
      * @param eventClass
      *            The type of event to stop listening to
      * @param listener
@@ -55,7 +63,7 @@ public class EventDispatcher {
     /**
      * Notify all listeners of an event. The event will stop being broadcast
      * once a listener consumes it.
-     * 
+     *
      * @param event
      *            The event to broadcast to listeners
      */
@@ -68,7 +76,7 @@ public class EventDispatcher {
      * not be broadcast to any more listeners once a listener consumes it. If
      * consumable is false, the event will be broadcast to all listeners, even
      * if a listener consumes the event.
-     * 
+     *
      * @param event
      *            The event to broadcast to listeners
      * @param consumable
@@ -108,5 +116,19 @@ public class EventDispatcher {
             }
             return eventListeners;
         }
+    }
+
+    /**
+     * Get an event from the dispatcher's pool of events
+     */
+    public <T extends Event<?>> T acquire(Class<T> type) {
+        return pool.acquire(type);
+    }
+
+    /**
+     * Release an event back to the dispatcher's pool
+     */
+    public <T extends Event<?>> void release(T event) {
+        pool.release(event);
     }
 }
