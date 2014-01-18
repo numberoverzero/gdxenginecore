@@ -5,10 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 import crossj.engine.physics.WorldBody;
 
 public class Mover {
-    private final float velocity;
+    private final float maxSpeed;
     private final WorldBody body;
-    private final Vector2 force;
-    private final Vector2 netForce;
+    private final Vector2 velocity = new Vector2();
+    private final Vector2 netVelocity = new Vector2();
 
     public enum Direction {
         Up(0, 1), Down(0, -1), Left(-1, 0), Right(1, 0);
@@ -20,20 +20,18 @@ public class Mover {
         }
     }
 
-    public Mover(WorldBody body, float velocity) {
+    public Mover(WorldBody body, float maxSpeed) {
         this.body = body;
-        this.velocity = velocity;
-        force = new Vector2();
-        netForce = new Vector2();
+        this.maxSpeed = maxSpeed;
     }
 
     public void setInput(Direction direction, boolean pressed) {
-        force.set(direction.unit).scl(pressed ? velocity : -velocity);
-        netForce.add(force);
+        velocity.set(direction.unit).scl(pressed ? maxSpeed : -maxSpeed);
+        netVelocity.add(velocity).limit(maxSpeed);
     }
 
     public void applyInput() {
-        body.setLinearVelocity(netForce);
+        body.setLinearVelocity(netVelocity);
     }
 
     public void setPosition(Vector2 position) {

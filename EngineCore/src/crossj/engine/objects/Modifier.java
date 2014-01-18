@@ -1,14 +1,12 @@
 package crossj.engine.objects;
 
-import com.badlogic.gdx.math.Vector2;
-
 import crossj.engine.event.EventDispatcher;
 import crossj.engine.events.ModifierEvent;
 
 /**
  * A single modifier object can be used for multiple units.
  */
-public class Modifier extends GameObject {
+public abstract class Modifier extends GameObject {
     /**
      * Events this class can trigger
      */
@@ -27,9 +25,11 @@ public class Modifier extends GameObject {
         return name;
     }
 
-    public void apply(GameObject gameObject) {
+    public void apply(GameObject gameObject, boolean notify) {
         gameObject.getModifiers().add(this);
-        gameObject.getEventDispatcher().notify(new ModifierEvent(gameObject, this, EventType.APPLIED));
+        if (notify) {
+            gameObject.getEventDispatcher().notify(new ModifierEvent(gameObject, this, EventType.APPLIED));
+        }
     }
 
     public void remove(GameObject gameObject, boolean notify, boolean dispose) {
@@ -37,18 +37,8 @@ public class Modifier extends GameObject {
         if (notify) {
             gameObject.getEventDispatcher().notify(new ModifierEvent(gameObject, this, EventType.REMOVED));
         }
-        if(dispose) {
+        if (dispose) {
             dispose();
         }
-    }
-
-    public void setPercent(float newValue) {
-        float oldValue = 0f;
-        onPropertyChange("percent", oldValue, newValue);
-    }
-
-    @Override
-    public Vector2 getPosition() {
-        return new Vector2(0, 0);
     }
 }

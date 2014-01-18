@@ -15,15 +15,13 @@ public class Tracker {
     }
 
     private GameObject object;
-    private final Vector2 position;
-    private final Vector2 lockPosition;
+    private final Vector2 position = new Vector2();
+    private final Vector2 lockPosition = new Vector2();
     private TrackingType type;
     private TrackingStatus status;
 
     public Tracker() {
         object = null;
-        position = new Vector2(0, 0);
-        lockPosition = new Vector2(0, 0);
         type = TrackingType.Static;
         status = TrackingStatus.Tracking;
     }
