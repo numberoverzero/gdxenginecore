@@ -150,15 +150,6 @@ public class EventPool implements Disposable {
 
         public StaticPool(int size, Behavior behavior, Callable<T> factory) {
             super(size, factory);
-            switch (behavior) {
-            case NULL:
-                break;
-            case DESTROY:
-                events.get(size - 1).setPoolNext(events.get(0));
-                break;
-            default:
-                throw new IllegalArgumentException("Static pools only support DESTROY or NULL behavior");
-            }
             this.behavior = behavior;
         }
 
