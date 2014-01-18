@@ -1,27 +1,10 @@
 package crossj.engine.events;
 
-import java.util.concurrent.Callable;
-
-import crossj.engine.event.BasicEvent;
-import crossj.engine.event.EventPool;
+import crossj.engine.event.BasicPoolEvent;
 import crossj.engine.objects.GameObject;
 import crossj.engine.objects.Modifier;
 
-public class ModifierEvent extends BasicEvent<ModiferListener> {
-
-    /**
-     * Add a pool of events to the global event pool.
-     */
-    static {
-        Callable<ModifierEvent> factory = new Callable<ModifierEvent>() {
-
-            @Override
-            public ModifierEvent call() throws Exception {
-                return new ModifierEvent(null, null, null);
-            }
-        };
-        EventPool.GLOBAL.addType(ModifierEvent.class, factory);
-    }
+public class ModifierEvent extends BasicPoolEvent<ModiferListener> {
 
     private GameObject gameObject;
     private Modifier modifier;

@@ -1,9 +1,9 @@
 package crossj.engine.events;
 
-import crossj.engine.event.BasicEvent;
+import crossj.engine.event.BasicPoolEvent;
 import crossj.engine.objects.GameObject;
 
-public class GameObjectPropertyEvent<T> extends BasicEvent<GameObjectListener> {
+public class GameObjectPropertyEvent<T> extends BasicPoolEvent<GameObjectListener> {
 
     // No static setup here to add events to the global pool, since I can't
     // figure out how to do that for a class with a type param. That's probably

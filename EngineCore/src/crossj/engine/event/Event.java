@@ -30,4 +30,16 @@ public interface Event<L> {
      * Reset the event. Used for pooling.
      */
     void reset();
+
+    /**
+     * Should not be called directly.  Used for an O(1) pool function getNextInactive()
+     */
+    void setPoolNext(@SuppressWarnings("rawtypes") Event event);
+
+    /**
+     * Should not be called directly.  Used for an O(1) pool function getNextInactive()
+     */
+    @SuppressWarnings("rawtypes")
+    Event getPoolNext();
+
 }

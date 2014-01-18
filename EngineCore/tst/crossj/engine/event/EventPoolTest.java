@@ -7,12 +7,15 @@ import java.util.concurrent.Callable;
 import org.junit.Before;
 import org.junit.Test;
 
+import crossj.engine.event.EventPool.Behavior;
+
 public class EventPoolTest {
     private static final int POOL_SIZE = 50;
+    private static final Behavior BEHAVIOR = Behavior.NULL;
 
     EventPool pool;
 
-    private class TestEvent extends BasicEvent<Object> {
+    private class TestEvent extends BasicPoolEvent<Object> {
         public int value = 0;
 
         @Override
@@ -40,12 +43,12 @@ public class EventPoolTest {
 
     @Before
     public void setUp() throws Exception {
-        pool = new EventPool(POOL_SIZE);
+        pool = new EventPool(POOL_SIZE, BEHAVIOR);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testPoolSizeZero() {
-        pool = new EventPool(0);
+        pool = new EventPool(0, BEHAVIOR);
     }
 
     @Test

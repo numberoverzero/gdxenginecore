@@ -6,21 +6,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import com.badlogic.gdx.Gdx;
-
 public class EventPool {
+    public enum Behavior {
+        /**
+         * Expand the pool to accommodate the call
+         */
+        EXPAND,
+
+        /**
+         * Return an event without expanding the pool, likely by
+         * destroying/resetting another event that is active
+         */
+        DESTROY,
+
+        /**
+         * Return null if there is no inactive event to return
+         */
+        NULL
+    }
+
     private static final int GLOBAL_POOL_SIZE = 500;
-    public static final EventPool GLOBAL = new EventPool(GLOBAL_POOL_SIZE);
+    public static final EventPool GLOBAL = new EventPool(GLOBAL_POOL_SIZE, Behavior.NULL);
 
     private final Map<Class<? extends Event<?>>, Pool<? extends Event<?>>> pools;
     private final int size;
+    private final Behavior behavior;
 
-    public EventPool(int size) {
+    public EventPool(int size, Behavior behavior) {
         pools = new HashMap<>();
         if (size < 1) {
             throw new IllegalArgumentException("Pool size must be > 0");
         }
         this.size = size;
+        this.behavior = behavior;
     }
 
     public <T extends Event<?>> void addType(Class<? extends T> type, Callable<T> factory) {
@@ -29,7 +47,19 @@ public class EventPool {
         } else if (pools.containsKey(type)) {
             throw new IllegalArgumentException("Pool already contains type <" + type.toString() + ">");
         }
-        pools.put(type, new Pool<T>(size, factory, type));
+        switch (behavior) {
+        case DESTROY:
+            pools.put(type, new StaticPool<T>(size, behavior, factory));
+            break;
+        case NULL:
+            pools.put(type, new StaticPool<T>(size, behavior, factory));
+            break;
+        case EXPAND:
+            pools.put(type, new DynamicPool<T>(size, factory));
+            break;
+        default:
+            throw new RuntimeException("Unknown pool constructor for behavior " + behavior);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -48,41 +78,96 @@ public class EventPool {
         ((Pool<T>) pools.get(event.getClass())).release(event);
     }
 
-    private class Pool<T extends Event<?>> {
-        private final Class<? extends T> type;
-        private final List<T> events;
-        final int size;
+    private abstract class Pool<T extends Event<?>> {
+        private final Callable<T> factory;
+        protected final List<T> events;
+        protected T firstAvailable;
 
-        public Pool(int size, Callable<T> factory, Class<? extends T> type) {
-            this.size = size;
-            this.type = type;
+        public Pool(int size, Callable<T> factory) {
+            this.factory = factory;
             events = new ArrayList<>(size);
-            for (int i = size; i > 0; i--) {
-                try {
-                    events.add(factory.call());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+            for (int i = 0; i < size; i++) {
+                T event = create();
+                events.add(event);
+                if (i > 0) {
+                    events.get(i - 1).setPoolNext(event);
                 }
+            }
+            events.get(size - 1).setPoolNext(null);
+            firstAvailable = events.get(0);
+        }
+
+        protected abstract T acquire();
+
+        protected void release(T event) {
+            event.setActive(false);
+            event.setPoolNext(firstAvailable);
+            firstAvailable = event;
+        }
+
+        protected T create() {
+            try {
+                return factory.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
 
-        public T acquire() {
-            int index = 0;
-            T event;
-            while (index++ < size) {
-                event = events.get(index);
-                if (!event.isActive()) {
-                    event.reset();
-                    event.setActive(true);
-                    return event;
-                }
+        /**
+         * Without null or bounds checks, advances firstAvailable to next
+         * pointer, resets and activates the previous firstAvailable and returns
+         * it for use
+         */
+        @SuppressWarnings("unchecked")
+        protected T advance() {
+            T event = firstAvailable;
+            event.reset();
+            event.setActive(true);
+            firstAvailable = (T) event.getPoolNext();
+            return event;
+        }
+    }
+
+    /**
+     * O(1) firstAvailable based on
+     * http://gameprogrammingpatterns.com/object-pool.html
+     */
+    private class StaticPool<T extends Event<?>> extends Pool<T> {
+        private final Behavior behavior;
+
+        public StaticPool(int size, Behavior behavior, Callable<T> factory) {
+            super(size, factory);
+            if (!(Behavior.DESTROY.equals(behavior) || Behavior.NULL.equals(behavior))) {
+                throw new IllegalArgumentException("Static pools only support DESTROY or NULL behavior");
             }
-            Gdx.app.error("EventPool.Pool", "Unable to acquire event of type " + type);
+            this.behavior = behavior;
+        }
+
+        @Override
+        protected T acquire() {
+            assert firstAvailable != null;
+
+            T event = firstAvailable;
+            if (!event.isActive() || Behavior.DESTROY.equals(behavior)) {
+                return advance();
+            }
             return null;
         }
+    }
 
-        public void release(T event) {
-            event.setActive(false);
+    private class DynamicPool<T extends Event<?>> extends Pool<T> {
+        public DynamicPool(int size, Callable<T> factory) {
+            super(size, factory);
+        }
+
+        @Override
+        protected T acquire() {
+            if (firstAvailable == null || firstAvailable.isActive()) {
+                // Create a new event and release it, setting it to
+                // firstAvailable
+                release(create());
+            }
+            return advance();
         }
     }
 }
