@@ -19,6 +19,7 @@ public abstract class Screen2D implements Screen, InputProcessor {
     protected final String debugName;
     protected final TTFontCache fonts;
     protected final BitmapFont debugFont;
+    protected final Vector2 debugPos = new Vector2();
 
     public Screen2D() {
         this(null);
@@ -61,11 +62,11 @@ public abstract class Screen2D implements Screen, InputProcessor {
     protected abstract void draw(float delta);
 
     private void renderDebugInfo(float delta) {
-        Vector2 position = Graphics.unproject(camera, 0, 0);
+        Graphics.unproject(camera, 0, 0, debugPos);
         String text = "Screen: " + debugName + "\n" + "FPS: " + Gdx.graphics.getFramesPerSecond();
 
         spriteBatch.begin();
-        debugFont.drawMultiLine(spriteBatch, text, position.x, position.y);
+        debugFont.drawMultiLine(spriteBatch, text, debugPos.x, debugPos.y);
         spriteBatch.end();
     }
 

@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class Math {
+    private static final Vector2 tmp = new Vector2();
+
     public static int max(int a, int b) {
         return a > b ? a : b;
     }
@@ -39,8 +41,9 @@ public class Math {
     public static float angle(Vector2 v1, Vector2 v2) {
         return angleDeg(v1, v2) * MathUtils.degreesToRadians;
     }
+
     public static float angleDeg(Vector2 v1, Vector2 v2) {
-        return new Vector2(v2).sub(v1).angle();
+        return tmp.set(v2).sub(v1).angle();
     }
 
     public static Vector2 midpoint(Vector2 v1, Vector2 v2) {
@@ -49,6 +52,7 @@ public class Math {
 
     /**
      * Absolute value of both directions
+     *
      * @param v
      * @return The vector for chaining
      */
@@ -78,6 +82,6 @@ public class Math {
     }
 
     public static Vector2 randomVector2(float minX, float maxX, float minY, float maxY) {
-        return new Vector2(MathUtils.random(minX, maxX), MathUtils.random(minY, maxY));
+        return tmp.set(MathUtils.random(minX, maxX), MathUtils.random(minY, maxY));
     }
 }
