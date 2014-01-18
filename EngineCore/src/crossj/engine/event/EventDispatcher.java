@@ -137,7 +137,9 @@ public class EventDispatcher implements Disposable {
     @Override
     @SuppressWarnings("rawtypes")
     public void dispose() {
-        pool.dispose();
+        if (pool != null) {
+            pool.dispose();
+        }
         for (List list : listeners.values()) {
             list.clear();
         }

@@ -1,8 +1,6 @@
 package crossj.engine.event;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -86,24 +84,25 @@ public class EventPool implements Disposable {
      */
     private abstract class Pool<T extends Event<?>> implements Disposable {
         private final Callable<T> factory;
-        protected final List<T> events;
         protected T firstAvailable;
+        protected int size;
 
+        @SuppressWarnings("unchecked")
         public Pool(int size, Callable<T> factory) {
             if (size < 1) {
                 throw new IllegalArgumentException("Pool must have positive non-zero size, was " + size);
             }
             this.factory = factory;
-            events = new ArrayList<>();
-            for (int i = 0; i < size; i++) {
-                T event = create();
-                events.add(event);
-                if (i > 0) {
-                    events.get(i - 1).setPoolNext(event);
-                }
+
+            @SuppressWarnings("rawtypes")
+            Event head, current;
+            head = current = create();
+            for (int i = 0; i < size - 1; i++) {
+                current.setPoolNext(create());
+                current = current.getPoolNext();
             }
-            firstAvailable = events.get(0);
-            events.get(size - 1).setPoolNext(events.get(0));
+            current.setPoolNext(head);
+            firstAvailable = (T) head;
         }
 
         protected abstract T acquire();
@@ -116,7 +115,9 @@ public class EventPool implements Disposable {
 
         protected T create() {
             try {
-                return factory.call();
+                T event = factory.call();
+                size++;
+                return event;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -137,11 +138,17 @@ public class EventPool implements Disposable {
         }
 
         @Override
+        @SuppressWarnings("rawtypes")
         public void dispose() {
-            for (T event : events) {
-                event.dispose();
+            Event current = firstAvailable, next;
+            for (int i = 0; i < size; i++) {
+                if (current == null) {
+                    return;
+                }
+                next = current.getPoolNext();
+                current.dispose();
+                current = next;
             }
-            events.clear();
         }
     }
 
