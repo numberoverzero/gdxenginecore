@@ -44,7 +44,6 @@ public class RayCastResult {
     public float fraction = 0;
 
     public RayCastResult() {
-
     }
 
     public RayCastResult(Vector2 start, Vector2 end) {
@@ -52,34 +51,16 @@ public class RayCastResult {
         this.end.set(end);
     }
 
-    public RayCastResult(RayCastResult other) {
-        update(other);
-    }
-
-    public void update(RayCastResult other) {
-        start.set(other.start);
-        end.set(other.end);
-        fixture = other.fixture;
-        point.set(other.point);
-        normal.set(other.normal);
-        fraction = other.fraction;
-        hasValue = other.hasValue;
-    }
-
-
     /**
      * Useful for dumping a raycast callback in an interative fashion, where
      * start/end do not change
      */
-    public void update(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+    public RayCastResult update(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
         this.fixture = fixture;
         this.point.set(point);
         this.normal.set(normal);
         this.fraction = fraction;
-    }
-
-    public RayCastResult cpy(RayCastResult other) {
-        return new RayCastResult(other);
+        return this;
     }
 
     /**

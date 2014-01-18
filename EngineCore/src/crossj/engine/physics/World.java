@@ -3,6 +3,7 @@ package crossj.engine.physics;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -12,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.Disposable;
 
 import crossj.engine.physics.raycasting.RayCastCallback;
-import crossj.engine.physics.raycasting.RayCastResult;
 
 public class World implements Disposable {
     private static final float DEFAULT_BOX_STEP = 1 / 60f;
@@ -140,16 +140,16 @@ public class World implements Disposable {
         getDebugRenderer().render(getBox2DWorld(), camera.combined.cpy().scl(toWorldScale()));
     }
 
-    public RayCastResult rayCast(RayCastCallback callback, Vector2 point1, Vector2 point2) {
-        callback.result = new RayCastResult();
+    public void rayCast(RayCastCallback callback, Vector2 point1, Vector2 point2) {
         if (point1.dst2(point2) <= ZERO) {
-            System.out.println("Zero distance");
-            return callback.result;
+            Gdx.app.log("World.rayCast", "Called with zero distance");
+            return;
         }
+        callback.reset();
         callback.result.start.set(toBox(tmp1.set(point1)));
         callback.result.end.set(toBox(tmp2.set(point2)));
         world.rayCast(callback, tmp1, tmp2);
-        return callback.result.scl(toWorldScale());
+        callback.result.scl(toWorldScale());
     }
 
     /**
