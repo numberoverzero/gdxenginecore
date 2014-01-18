@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EventDispatcher {
+import com.badlogic.gdx.utils.Disposable;
+
+public class EventDispatcher implements Disposable {
     public static final EventDispatcher GLOBAL = new EventDispatcher();
 
     @SuppressWarnings("rawtypes")
@@ -130,5 +132,15 @@ public class EventDispatcher {
      */
     public <T extends Event<?>> void release(T event) {
         pool.release(event);
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public void dispose() {
+        pool.dispose();
+        for (List list : listeners.values()) {
+            list.clear();
+        }
+        listeners.clear();
     }
 }

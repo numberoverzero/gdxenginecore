@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-public class EventPool {
+import com.badlogic.gdx.utils.Disposable;
+
+public class EventPool implements Disposable {
     public enum Behavior {
         /**
          * Expand the pool to accommodate the call
@@ -82,14 +84,14 @@ public class EventPool {
      * O(1) firstAvailable based on
      * http://gameprogrammingpatterns.com/object-pool.html
      */
-    private abstract class Pool<T extends Event<?>> {
+    private abstract class Pool<T extends Event<?>> implements Disposable {
         private final Callable<T> factory;
         protected final List<T> events;
         protected T firstAvailable;
 
         public Pool(int size, Callable<T> factory) {
             this.factory = factory;
-            events = new ArrayList<>(size);
+            events = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 T event = create();
                 events.add(event);
@@ -129,6 +131,14 @@ public class EventPool {
             event.setActive(true);
             firstAvailable = (T) event.getPoolNext();
             return event;
+        }
+
+        @Override
+        public void dispose() {
+            for(T event : events) {
+                event.dispose();
+            }
+            events.clear();
         }
     }
 
@@ -183,5 +193,14 @@ public class EventPool {
             }
             return advance();
         }
+    }
+
+    @Override
+    public void dispose() {
+        for(Pool<? extends Event<?>> pool : pools.values()) {
+            pool.dispose();
+        }
+        pools.clear();
+
     }
 }

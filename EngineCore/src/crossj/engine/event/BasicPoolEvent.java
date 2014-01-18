@@ -26,6 +26,11 @@ public abstract class BasicPoolEvent<L> implements Event<L> {
     @SuppressWarnings("rawtypes")
     public void setPoolNext(Event event) {
         next = event;
+    }
 
+    @Override
+    public void dispose() {
+        active = false;
+        next = null;
     }
 }

@@ -3,10 +3,12 @@
  */
 package crossj.engine.event;
 
+import com.badlogic.gdx.utils.Disposable;
+
 /**
  * An event notifies a listener that it is available for consumption.
  */
-public interface Event<L> {
+public interface Event<L> extends Disposable {
     /**
      * Returns true if the event was consumed by the listener false otherwise
      *
