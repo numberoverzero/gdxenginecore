@@ -9,6 +9,7 @@ public class Mover {
     private final WorldBody body;
     private final Vector2 velocity = new Vector2();
     private final Vector2 netVelocity = new Vector2();
+    private final Vector2 tmp = new Vector2();
 
     public enum Direction {
         Up(0, 1), Down(0, -1), Left(-1, 0), Right(1, 0);
@@ -27,11 +28,11 @@ public class Mover {
 
     public void setInput(Direction direction, boolean pressed) {
         velocity.set(direction.unit).scl(pressed ? maxSpeed : -maxSpeed);
-        netVelocity.add(velocity).limit(maxSpeed);
+        netVelocity.add(velocity);
     }
 
     public void applyInput() {
-        body.setLinearVelocity(netVelocity);
+        body.setLinearVelocity(tmp.set(netVelocity).limit(maxSpeed));
     }
 
     public void setPosition(Vector2 position) {
