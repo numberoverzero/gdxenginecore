@@ -9,6 +9,9 @@ import com.badlogic.gdx.utils.Disposable;
 import crossj.engine.pool.Pool;
 import crossj.engine.pool.PoolBehavior;
 
+/**
+ * Manages multiple event class pools
+ */
 public class EventPool implements Disposable {
     private static final int GLOBAL_POOL_SIZE = 500;
     public static final EventPool GLOBAL = new EventPool(GLOBAL_POOL_SIZE, PoolBehavior.NULL);

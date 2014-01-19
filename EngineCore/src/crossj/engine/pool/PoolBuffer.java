@@ -18,11 +18,6 @@ public class PoolBuffer<E extends Poolable> implements Disposable {
      * element. This element will be returned by the next peek/advance call
      */
     public E insert(E e) {
-        // If this is the first addition, loop the reference
-        // so that e.getNext() returns e
-        if (head == null) {
-            head = e;
-        }
         e.setNext(head);
         head = e;
         return head;
