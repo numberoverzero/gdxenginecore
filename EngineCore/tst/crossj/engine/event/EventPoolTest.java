@@ -7,11 +7,11 @@ import java.util.concurrent.Callable;
 import org.junit.Before;
 import org.junit.Test;
 
-import crossj.engine.event.EventPool.Behavior;
+import crossj.engine.pool.PoolBehavior;
 
 public class EventPoolTest {
     private static final int POOL_SIZE = 50;
-    private static final Behavior BEHAVIOR = Behavior.NULL;
+    private static final PoolBehavior BEHAVIOR = PoolBehavior.NULL;
 
     EventPool pool;
 
@@ -129,7 +129,7 @@ public class EventPoolTest {
 
     @Test
     public void testDynamicPoolExpands() {
-        pool = new EventPool(POOL_SIZE, Behavior.EXPAND);
+        pool = new EventPool(POOL_SIZE, PoolBehavior.EXPAND);
         pool.addType(TestEvent.class, factory);
         // Exhaust the pool
         for (int i = 0; i < POOL_SIZE; i++) {
@@ -143,7 +143,7 @@ public class EventPoolTest {
 
     @Test
     public void testStaticPoolDestroysActive() {
-        pool = new EventPool(POOL_SIZE, Behavior.DESTROY);
+        pool = new EventPool(POOL_SIZE, PoolBehavior.DESTROY);
         pool.addType(TestEvent.class, factory);
         // Exhaust the pool
         for (int i = 0; i < POOL_SIZE; i++) {

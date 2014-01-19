@@ -6,33 +6,17 @@ import java.util.concurrent.Callable;
 
 import com.badlogic.gdx.utils.Disposable;
 
+import crossj.engine.pool.PoolBehavior;
+
 public class EventPool implements Disposable {
-    public enum Behavior {
-        /**
-         * Expand the pool to accommodate the call
-         */
-        EXPAND,
-
-        /**
-         * Return an event without expanding the pool, likely by
-         * destroying/resetting another event that is active
-         */
-        DESTROY,
-
-        /**
-         * Return null if there is no inactive event to return
-         */
-        NULL
-    }
-
     private static final int GLOBAL_POOL_SIZE = 500;
-    public static final EventPool GLOBAL = new EventPool(GLOBAL_POOL_SIZE, Behavior.NULL);
+    public static final EventPool GLOBAL = new EventPool(GLOBAL_POOL_SIZE, PoolBehavior.NULL);
 
     private final Map<Class<? extends Event<?>>, Pool<? extends Event<?>>> pools;
     private final int size;
-    private final Behavior behavior;
+    private final PoolBehavior behavior;
 
-    public EventPool(int size, Behavior behavior) {
+    public EventPool(int size, PoolBehavior behavior) {
         pools = new HashMap<>();
         if (size < 1) {
             throw new IllegalArgumentException("Pool must have positive non-zero size, was " + size);
@@ -151,16 +135,16 @@ public class EventPool implements Disposable {
     }
 
     private class StaticPool<T extends Event<?>> extends Pool<T> {
-        private final Behavior behavior;
+        private final PoolBehavior behavior;
 
-        public StaticPool(int size, Behavior behavior, Callable<T> factory) {
+        public StaticPool(int size, PoolBehavior behavior, Callable<T> factory) {
             super(size, factory);
             this.behavior = behavior;
         }
 
         @Override
         protected T acquire() {
-            if (Behavior.NULL.equals(behavior) && firstAvailable.isActive()) {
+            if (PoolBehavior.NULL.equals(behavior) && firstAvailable.isActive()) {
                 System.out.println("Still active");
                 return null;
             }
