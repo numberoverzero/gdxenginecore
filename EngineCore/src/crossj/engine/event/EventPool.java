@@ -29,7 +29,7 @@ public class EventPool implements Disposable {
         this.behavior = behavior;
     }
 
-    public <T extends Event<?>> void addType(Class<? extends T> type, Callable<? extends T> factory) {
+    public <T extends Event<?>> void addType(Class<T> type, Callable<T> factory) {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null");
         } else if (pools.containsKey(type)) {

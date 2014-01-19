@@ -1,10 +1,10 @@
 package crossj.engine.events;
 
-import crossj.engine.event.BasicPoolEvent;
+import crossj.engine.event.Event;
 import crossj.engine.objects.GameObject;
 import crossj.engine.objects.Modifier;
 
-public class ModifierEvent extends BasicPoolEvent<ModiferListener> {
+public class ModifierEvent extends Event<ModiferListener> {
 
     private GameObject gameObject;
     private Modifier modifier;

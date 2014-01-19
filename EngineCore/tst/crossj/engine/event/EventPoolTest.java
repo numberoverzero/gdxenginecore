@@ -15,7 +15,7 @@ public class EventPoolTest {
 
     EventPool pool;
 
-    private class TestEvent extends BasicPoolEvent<Object> {
+    private class TestEvent extends Event<Object> {
         public int value = 0;
         public boolean active = false;
         public boolean resetWhileActive = false;

@@ -12,7 +12,7 @@ public class Pool<E extends Poolable<E>> implements Disposable {
 
     public Pool(int size, PoolBehavior behavior, Callable<? extends E> factory) {
         if (size < 1) {
-            throw new IllegalArgumentException("Pool must have positive non-zero size, was " + size);
+            throw new IllegalArgumentException("Invalid size " + size);
         }
         this.behavior = behavior;
         this.factory = factory;
@@ -29,16 +29,14 @@ public class Pool<E extends Poolable<E>> implements Disposable {
 
     protected E create() {
         try {
-            E event = factory.call();
-            return event;
+            return factory.call();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public E acquire() {
-        E head = buffer.peek();
-        if (head.isActive()) {
+        if (buffer.peek().isActive()) {
             switch (behavior) {
             case DESTROY:
                 // Ignore that it's active and reset it anyway
