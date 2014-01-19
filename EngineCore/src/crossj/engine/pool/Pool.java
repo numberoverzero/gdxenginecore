@@ -15,15 +15,20 @@ public class Pool<E extends Poolable> implements Disposable {
     private final Callable<E> factory;
 
     public Pool(int size, PoolBehavior behavior, Callable<E> factory) {
+        if (size < 1) {
+            throw new IllegalArgumentException("Pool must have positive non-zero size, was " + size);
+        }
         this.behavior = behavior;
         this.factory = factory;
         buffer = new PoolBuffer<>();
-        E head = create();
-        buffer.add(head);
+
+        // Keep a reference to the first element inserted (end of the list) so
+        // that it can refer to the head when we're done generating elements
+        E end = buffer.insert(create());
         for (int i = 0; i < size - 1; i++) {
-            buffer.add(create());
+            buffer.insert(create());
         }
-        buffer.add(head);
+        end.setNext(buffer.peek());
     }
 
     protected E create() {
@@ -40,19 +45,16 @@ public class Pool<E extends Poolable> implements Disposable {
         if (head.isActive()) {
             switch (behavior) {
             case DESTROY:
-                head.reset();
+                // Ignore that it's active and reset it anyway
                 break;
             case EXPAND:
-                System.out.println("Expanding");
                 release(create());
                 break;
             case NULL:
                 return null;
             }
         }
-        head = buffer.advance();
-        //head.reset();
-        return head;
+        return buffer.advance().reset();
     }
 
     public void release(E e) {
@@ -60,7 +62,7 @@ public class Pool<E extends Poolable> implements Disposable {
             return;
         }
         assert !e.isActive();
-        buffer.add(e);
+        buffer.insert(e);
     }
 
     @Override

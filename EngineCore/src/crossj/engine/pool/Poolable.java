@@ -9,5 +9,5 @@ public interface Poolable extends Disposable {
 
     boolean isActive();
 
-    void reset();
+    <E extends Poolable> E reset();
 }

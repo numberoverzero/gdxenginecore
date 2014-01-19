@@ -17,7 +17,7 @@ public class PoolBuffer<E extends Poolable> implements Disposable {
      * Adds an element as the new head, pointing to the old head as the next
      * element. This element will be returned by the next peek/advance call
      */
-    public void add(E e) {
+    public E insert(E e) {
         // If this is the first addition, loop the reference
         // so that e.getNext() returns e
         if (head == null) {
@@ -25,6 +25,7 @@ public class PoolBuffer<E extends Poolable> implements Disposable {
         }
         e.setNext(head);
         head = e;
+        return head;
     }
 
     public E peek() {
