@@ -9,6 +9,7 @@ public class ModifierEvent extends BasicPoolEvent<ModiferListener> {
     private GameObject gameObject;
     private Modifier modifier;
     private Modifier.EventType type;
+    public boolean active = false;
 
     public ModifierEvent(GameObject gameObject, Modifier modifier, Modifier.EventType type) {
         this.gameObject = gameObject;
@@ -33,6 +34,12 @@ public class ModifierEvent extends BasicPoolEvent<ModiferListener> {
         gameObject = null;
         modifier = null;
         type = null;
+        active = false;
+    }
+
+    @Override
+    public boolean isActive() {
+        return active;
     }
 
 }

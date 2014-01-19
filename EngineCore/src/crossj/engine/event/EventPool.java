@@ -108,7 +108,6 @@ public class EventPool implements Disposable {
         protected abstract T acquire();
 
         protected void release(T event) {
-            event.setActive(false);
             event.setPoolNext(firstAvailable);
             firstAvailable = event;
         }
@@ -132,7 +131,6 @@ public class EventPool implements Disposable {
         protected T advance() {
             T event = firstAvailable;
             event.reset();
-            event.setActive(true);
             firstAvailable = (T) event.getPoolNext();
             return event;
         }
@@ -163,6 +161,7 @@ public class EventPool implements Disposable {
         @Override
         protected T acquire() {
             if (Behavior.NULL.equals(behavior) && firstAvailable.isActive()) {
+                System.out.println("Still active");
                 return null;
             }
             return advance();

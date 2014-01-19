@@ -14,6 +14,7 @@ public class GameObjectPropertyEvent<T> extends BasicPoolEvent<GameObjectListene
     private String property;
     private T oldValue;
     private T newValue;
+    public boolean active = false;
 
     public GameObjectPropertyEvent(GameObject gameObject, String property, T oldValue, T newValue) {
         this.gameObject = gameObject;
@@ -33,6 +34,12 @@ public class GameObjectPropertyEvent<T> extends BasicPoolEvent<GameObjectListene
         property = null;
         oldValue = null;
         newValue = null;
+        active = false;
+    }
+
+    @Override
+    public boolean isActive() {
+        return active;
     }
 
 }

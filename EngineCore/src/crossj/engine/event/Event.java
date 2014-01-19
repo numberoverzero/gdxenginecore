@@ -24,11 +24,6 @@ public interface Event<L> extends Disposable {
     boolean isActive();
 
     /**
-     * Whether the event is currently in use.
-     */
-    void setActive(boolean active);
-
-    /**
      * Reset the event. Used for pooling.
      */
     void reset();

@@ -17,6 +17,7 @@ public class EventPoolTest {
 
     private class TestEvent extends BasicPoolEvent<Object> {
         public int value = 0;
+        public boolean active = false;
         public boolean resetWhileActive = false;
 
         @Override
@@ -30,6 +31,12 @@ public class EventPoolTest {
             if (isActive()) {
                 resetWhileActive = true;
             }
+            active = false;
+        }
+
+        @Override
+        public boolean isActive() {
+            return active;
         }
     }
 
