@@ -31,12 +31,12 @@ public interface Event<L> extends Disposable {
     /**
      * Should not be called directly.  Used for an O(1) pool function getNextInactive()
      */
-    void setPoolNext(@SuppressWarnings("rawtypes") Event event);
+    void setNext(@SuppressWarnings("rawtypes") Event event);
 
     /**
      * Should not be called directly.  Used for an O(1) pool function getNextInactive()
      */
     @SuppressWarnings("rawtypes")
-    Event getPoolNext();
+    Event getNext();
 
 }

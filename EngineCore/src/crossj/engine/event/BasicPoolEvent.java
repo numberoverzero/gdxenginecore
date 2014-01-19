@@ -7,13 +7,13 @@ public abstract class BasicPoolEvent<L> implements Event<L> {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public Event getPoolNext() {
+    public Event getNext() {
         return next;
     }
 
     @Override
     @SuppressWarnings("rawtypes")
-    public void setPoolNext(Event event) {
+    public void setNext(Event event) {
         next = event;
     }
 

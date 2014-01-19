@@ -98,17 +98,17 @@ public class EventPool implements Disposable {
             Event head, current;
             head = current = create();
             for (int i = 0; i < size - 1; i++) {
-                current.setPoolNext(create());
-                current = current.getPoolNext();
+                current.setNext(create());
+                current = current.getNext();
             }
-            current.setPoolNext(head);
+            current.setNext(head);
             firstAvailable = (T) head;
         }
 
         protected abstract T acquire();
 
         protected void release(T event) {
-            event.setPoolNext(firstAvailable);
+            event.setNext(firstAvailable);
             firstAvailable = event;
         }
 
@@ -131,7 +131,7 @@ public class EventPool implements Disposable {
         protected T advance() {
             T event = firstAvailable;
             event.reset();
-            firstAvailable = (T) event.getPoolNext();
+            firstAvailable = (T) event.getNext();
             return event;
         }
 
@@ -143,7 +143,7 @@ public class EventPool implements Disposable {
                 if (current == null) {
                     return;
                 }
-                next = current.getPoolNext();
+                next = current.getNext();
                 current.dispose();
                 current = next;
             }
