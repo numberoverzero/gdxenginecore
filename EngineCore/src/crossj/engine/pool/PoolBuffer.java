@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Disposable;
  * insert (before head) and peek/pop (at head only). The limited operations
  * force an O(1) access pattern.
  */
-public class PoolBuffer<E extends Poolable> implements Disposable {
+public class PoolBuffer<E extends Poolable<E>> implements Disposable {
     private E head;
 
     public PoolBuffer() {
@@ -30,12 +30,10 @@ public class PoolBuffer<E extends Poolable> implements Disposable {
 
     /**
      * Return the current head, and advance head to the next value
-     * (pre-increment)
      */
-    @SuppressWarnings("unchecked")
     public E pop() {
         E tmp = head;
-        head = (E) head.getNext();
+        head = head.getNext();
         return tmp;
     }
 
@@ -45,5 +43,4 @@ public class PoolBuffer<E extends Poolable> implements Disposable {
             pop().setNext(null);
         }
     }
-
 }

@@ -29,13 +29,13 @@ public class EventPool implements Disposable {
         this.behavior = behavior;
     }
 
-    public <T extends Event<?>> void addType(Class<? extends T> type, Callable<T> factory) {
+    public <T extends Event<?>> void addType(Class<? extends T> type, Callable<? extends T> factory) {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null");
         } else if (pools.containsKey(type)) {
             throw new IllegalArgumentException("Pool already contains type <" + type.toString() + ">");
         }
-        pools.put(type, new Pool<T>(size, behavior, factory));
+        pools.put(type, new Pool<Event<?>>(size, behavior, factory));
     }
 
     @SuppressWarnings("unchecked")
@@ -43,7 +43,7 @@ public class EventPool implements Disposable {
         if (type == null || !pools.containsKey(type)) {
             return null;
         }
-        return ((Pool<T>) pools.get(type)).acquire();
+        return (T) ((Pool<Event<?>>) pools.get(type)).acquire();
     }
 
     @SuppressWarnings("unchecked")
@@ -51,7 +51,7 @@ public class EventPool implements Disposable {
         if (event == null || !pools.containsKey(event.getClass())) {
             return;
         }
-        ((Pool<T>) pools.get(event.getClass())).release(event);
+        ((Pool<Event<?>>) pools.get(event.getClass())).release(event);
     }
 
     @Override

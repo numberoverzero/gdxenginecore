@@ -29,7 +29,6 @@ public class GameObjectPropertyEvent<T> extends BasicPoolEvent<GameObjectListene
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public GameObjectPropertyEvent<T> reset() {
         gameObject = null;
         property = null;

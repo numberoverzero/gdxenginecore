@@ -26,7 +26,6 @@ public class EventPoolTest {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public TestEvent reset() {
             value = 0;
             if (isActive()) {

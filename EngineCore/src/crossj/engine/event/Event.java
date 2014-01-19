@@ -9,7 +9,7 @@ import crossj.engine.pool.Poolable;
 /**
  * An event notifies a listener that it is available for consumption.
  */
-public interface Event<L> extends Poolable {
+public interface Event<L> extends Poolable<Event<L>> {
     /**
      * Returns true if the event was consumed by the listener false otherwise
      *

@@ -4,17 +4,13 @@ import java.util.concurrent.Callable;
 
 import com.badlogic.gdx.utils.Disposable;
 
-/**
- * O(1) acquire and release based on
- * http://gameprogrammingpatterns.com/object-pool.html
- */
-public class Pool<E extends Poolable> implements Disposable {
+public class Pool<E extends Poolable<E>> implements Disposable {
 
     private final PoolBuffer<E> buffer;
     private final PoolBehavior behavior;
-    private final Callable<E> factory;
+    private final Callable<? extends E> factory;
 
-    public Pool(int size, PoolBehavior behavior, Callable<E> factory) {
+    public Pool(int size, PoolBehavior behavior, Callable<? extends E> factory) {
         if (size < 1) {
             throw new IllegalArgumentException("Pool must have positive non-zero size, was " + size);
         }

@@ -7,13 +7,13 @@ public enum PoolBehavior {
     EXPAND,
 
     /**
-     * Return an event without expanding the pool, likely by
-     * destroying/resetting another event that is active
+     * Return an item without expanding the pool, likely by
+     * destroying/resetting another item that is active
      */
     DESTROY,
 
     /**
-     * Return null if there is no inactive event to return
+     * Return null if there is no inactive item to return
      */
     NULL
 }
