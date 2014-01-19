@@ -30,11 +30,13 @@ public class ModifierEvent extends BasicPoolEvent<ModiferListener> {
     }
 
     @Override
-    public void reset() {
+    @SuppressWarnings("unchecked")
+    public ModifierEvent reset() {
         gameObject = null;
         modifier = null;
         type = null;
         active = false;
+        return this;
     }
 
     @Override
