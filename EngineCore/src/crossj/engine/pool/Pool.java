@@ -54,7 +54,7 @@ public class Pool<E extends Poolable> implements Disposable {
                 return null;
             }
         }
-        return buffer.advance().reset();
+        return buffer.pop().reset();
     }
 
     public void release(E e) {

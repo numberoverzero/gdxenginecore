@@ -3,8 +3,9 @@ package crossj.engine.pool;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
- * Buffer specifically designed for pools. Does not support remove, traversal,
- * contains. Appends to front of buffer, does not track size.
+ * Buffer specifically designed for pools. It's a linked list that supports
+ * insert (before head) and peek/pop (at head only). The limited operations
+ * force an O(1) access pattern.
  */
 public class PoolBuffer<E extends Poolable> implements Disposable {
     private E head;
@@ -30,12 +31,9 @@ public class PoolBuffer<E extends Poolable> implements Disposable {
     /**
      * Return the current head, and advance head to the next value
      * (pre-increment)
-     *
-     * @return
      */
     @SuppressWarnings("unchecked")
-    public E advance() {
-        assert head != null;
+    public E pop() {
         E tmp = head;
         head = (E) head.getNext();
         return tmp;
@@ -43,11 +41,8 @@ public class PoolBuffer<E extends Poolable> implements Disposable {
 
     @Override
     public void dispose() {
-        Poolable current = head, next;
-        while (current != null) {
-            next = current.getNext();
-            current.setNext(null);
-            current = next;
+        while (peek() != null) {
+            pop().setNext(null);
         }
     }
 
