@@ -108,9 +108,9 @@ public class EventDispatcher implements Disposable {
         return getListeners((Class<? extends Event<L>>) event.getClass());
     }
 
+    @SuppressWarnings("unchecked")
     private <L> List<L> getListeners(Class<? extends Event<L>> eventClass) {
         synchronized (listeners) {
-            @SuppressWarnings("unchecked")
             List<L> eventListeners = listeners.get(eventClass);
             if (eventListeners == null) {
                 eventListeners = new ArrayList<L>();

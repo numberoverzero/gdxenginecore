@@ -5,7 +5,6 @@ package crossj.engine.event;
 
 import crossj.engine.pool.Poolable;
 
-
 /**
  * An event notifies a listener that it is available for consumption.
  */

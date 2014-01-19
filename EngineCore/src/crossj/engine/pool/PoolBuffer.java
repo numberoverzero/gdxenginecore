@@ -6,25 +6,25 @@ import com.badlogic.gdx.utils.Disposable;
  * Stack with limited interface
  */
 public class PoolBuffer<E extends Poolable<E>> implements Disposable {
-    private E head;
+    private E top;
 
     public PoolBuffer() {
-        head = null;
+        top = null;
     }
 
-    public E insert(E e) {
-        e.setNext(head);
-        head = e;
-        return head;
+    public E push(E e) {
+        e.setNext(top);
+        top = e;
+        return top;
     }
 
     public E peek() {
-        return head;
+        return top;
     }
 
     public E pop() {
-        E tmp = head;
-        head = head.getNext();
+        E tmp = top;
+        top = top.getNext();
         return tmp;
     }
 

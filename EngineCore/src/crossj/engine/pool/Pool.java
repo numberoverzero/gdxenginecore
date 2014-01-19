@@ -8,9 +8,9 @@ public class Pool<E extends Poolable<E>> implements Disposable {
 
     private final PoolBuffer<E> buffer;
     private final PoolBehavior behavior;
-    private final Callable<? extends E> factory;
+    private final Callable<E> factory;
 
-    public Pool(int size, PoolBehavior behavior, Callable<? extends E> factory) {
+    public Pool(int size, PoolBehavior behavior, Callable<E> factory) {
         if (size < 1) {
             throw new IllegalArgumentException("Invalid size " + size);
         }
@@ -20,9 +20,9 @@ public class Pool<E extends Poolable<E>> implements Disposable {
 
         // Keep a reference to the first element inserted (end of the list) so
         // that it can refer to the head when we're done generating elements
-        E end = buffer.insert(create());
+        E end = buffer.push(create());
         for (int i = 0; i < size - 1; i++) {
-            buffer.insert(create());
+            buffer.push(create());
         }
         end.setNext(buffer.peek());
     }
@@ -56,7 +56,7 @@ public class Pool<E extends Poolable<E>> implements Disposable {
             return;
         }
         assert !e.isActive();
-        buffer.insert(e);
+        buffer.push(e);
     }
 
     @Override

@@ -23,19 +23,20 @@ public class EventPool implements Disposable {
     public EventPool(int size, PoolBehavior behavior) {
         pools = new HashMap<>();
         if (size < 1) {
-            throw new IllegalArgumentException("Pool must have positive non-zero size, was " + size);
+            throw new IllegalArgumentException("Invalid size " + size);
         }
         this.size = size;
         this.behavior = behavior;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Event<?>> void addType(Class<T> type, Callable<T> factory) {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null");
         } else if (pools.containsKey(type)) {
             throw new IllegalArgumentException("Pool already contains type <" + type.toString() + ">");
         }
-        pools.put(type, new Pool<Event<?>>(size, behavior, factory));
+        pools.put(type, new Pool<Event<?>>(size, behavior, (Callable<Event<?>>)factory));
     }
 
     @SuppressWarnings("unchecked")
