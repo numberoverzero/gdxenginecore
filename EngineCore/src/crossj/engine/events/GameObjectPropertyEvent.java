@@ -41,5 +41,4 @@ public class GameObjectPropertyEvent<T> extends BasicPoolEvent<GameObjectListene
     public boolean isActive() {
         return active;
     }
-
 }

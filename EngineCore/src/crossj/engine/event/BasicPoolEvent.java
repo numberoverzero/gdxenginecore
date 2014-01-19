@@ -1,20 +1,21 @@
 package crossj.engine.event;
 
+import crossj.engine.pool.Poolable;
+
 public abstract class BasicPoolEvent<L> implements Event<L> {
 
-    @SuppressWarnings("rawtypes")
-    private Event next = null;
+    private Poolable next = null;
 
+    @SuppressWarnings("unchecked")
     @Override
-    @SuppressWarnings("rawtypes")
-    public Event getNext() {
-        return next;
+    public <E extends Poolable> E getNext() {
+        return (E) next;
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    public void setNext(Event event) {
-        next = event;
+    public <E extends Poolable> void setNext(E next) {
+        this.next = next;
+
     }
 
     @Override
