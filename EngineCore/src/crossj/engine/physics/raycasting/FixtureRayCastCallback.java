@@ -15,7 +15,7 @@ public class FixtureRayCastCallback extends RayCastCallback {
         if (fixture.equals(this.fixture)) {
             result.update(fixture, point, normal, fraction);
             result.hasValue = true;
-            return 1;
+            return 0;
         }
         return 1;
     }
