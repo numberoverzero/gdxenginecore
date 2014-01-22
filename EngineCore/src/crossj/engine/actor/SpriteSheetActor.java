@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import crossj.engine.objects.Tracker;
 import crossj.engine.util.Graphics;
-import crossj.engine.util.Util;
+import crossj.engine.util.MathUtil;
 
 public class SpriteSheetActor implements Actor {
     private final Texture texture;
@@ -67,7 +67,7 @@ public class SpriteSheetActor implements Actor {
 
     @Override
     public void setOrigin(Vector2 origin) {
-        this.origin.set(Util.constrain(origin.cpy(), 0, 1));
+        this.origin.set(MathUtil.constrain(origin.cpy(), 0, 1));
     }
 
     @Override

@@ -11,21 +11,21 @@ public class RollingAverage {
     private float remainder;
 
     private final float[] samples;
-    private final int nsamples;
+    private final int nSamples;
     private int oldest;
 
     private float rollingAverage;
 
     public RollingAverage(float duration, int samples) {
         this.samples = new float[samples];
-        nsamples = samples;
+        nSamples = samples;
         resolution = duration / samples;
     }
 
     private void advance() {
-        rollingAverage += (remainder - samples[oldest]) / nsamples;
-        samples[oldest] = remainder;
-        oldest = (++oldest) % nsamples;
+        rollingAverage += (remainder - samples[oldest]) / nSamples;
+        samples[oldest++] = remainder;
+        oldest %= nSamples;
         remainder = remainderDt = 0;
     }
 
@@ -44,13 +44,9 @@ public class RollingAverage {
         }
     }
 
-    public float getAverage() {
-        float partialSample = ((remainder * remainderDt) + (samples[oldest] * (resolution - remainderDt))) / resolution;
-        float correction = (partialSample - samples[oldest]) / nsamples;
-        return rollingAverage + correction;
-    }
-
     public float value() {
-        return getAverage();
+        float partialSample = ((remainder * remainderDt) + (samples[oldest] * (resolution - remainderDt))) / resolution;
+        float correction = (partialSample - samples[oldest]) / nSamples;
+        return rollingAverage + correction;
     }
 }

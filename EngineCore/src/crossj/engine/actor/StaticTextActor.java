@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import crossj.engine.objects.Tracker;
-import crossj.engine.util.Util;
+import crossj.engine.util.MathUtil;
 
 public class StaticTextActor implements Actor {
     private final BitmapFont font;
@@ -30,7 +30,7 @@ public class StaticTextActor implements Actor {
 
     @Override
     public void setOrigin(Vector2 origin) {
-        this.origin.set(Util.constrain(origin.cpy(), 0, 1));
+        this.origin.set(MathUtil.constrain(origin.cpy(), 0, 1));
     }
 
     @Override

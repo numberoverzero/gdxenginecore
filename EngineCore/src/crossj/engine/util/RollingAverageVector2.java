@@ -11,14 +11,14 @@ public class RollingAverageVector2 {
         y = new RollingAverage(duration, samples);
     }
 
-    public void update(Vector2 v, float stepDt) {
+    public RollingAverageVector2 update(Vector2 v, float stepDt) {
         x.update(v.x, stepDt);
         y.update(v.y, stepDt);
         avg.set(x.value(), y.value());
+        return this;
     }
 
     public Vector2 value() {
         return avg;
     }
-
 }
