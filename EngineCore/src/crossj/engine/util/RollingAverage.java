@@ -2,7 +2,7 @@ package crossj.engine.util;
 
 /**
  * Formatted description available at
- * https://gist.github.com/numberoverzero/8525669
+ * https://gist.github.com/numberoverzero/8536341
  */
 public class RollingAverage {
     private final float resolution;
@@ -23,16 +23,14 @@ public class RollingAverage {
     }
 
     private void advance() {
-        rollingAverage -= samples[oldest] / nsamples;
+        rollingAverage += (remainder - samples[oldest]) / nsamples;
         samples[oldest] = remainder;
-        rollingAverage += samples[oldest] / nsamples;
         oldest = (++oldest) % nsamples;
         remainder = remainderDt = 0;
     }
 
     public void update(float v, float stepDt) {
-        float delta = remainderDt + stepDt;
-        float stepWeight;
+        float stepWeight, delta = remainderDt + stepDt;
         while (delta >= resolution) {
             delta -= resolution;
             stepWeight = resolution - remainderDt;
@@ -41,6 +39,9 @@ public class RollingAverage {
         }
         remainder = ((remainder * remainderDt) + (v * (delta - remainderDt))) / delta;
         remainderDt = delta;
+        if(Float.isNaN(remainder)) {
+            remainder = remainderDt = 0;
+        }
     }
 
     public float getAverage() {
@@ -49,4 +50,7 @@ public class RollingAverage {
         return rollingAverage + correction;
     }
 
+    public float value() {
+        return getAverage();
+    }
 }

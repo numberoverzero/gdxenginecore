@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Graphics {
     private static Vector3 tmp = new Vector3();
+    public static final Vector2 CENTER = new Vector2(0.5f, 0.5f);
 
     public static Animation fromSpriteSheet(Texture texture, float frameDuration, int frameColumns, int frameRows) {
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / frameColumns, texture.getHeight()

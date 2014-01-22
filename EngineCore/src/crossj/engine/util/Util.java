@@ -3,7 +3,7 @@ package crossj.engine.util;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-public class Math {
+public class Util {
     private static final Vector2 tmp = new Vector2();
 
     public static int max(int a, int b) {
