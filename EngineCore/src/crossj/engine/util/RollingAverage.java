@@ -5,7 +5,7 @@ package crossj.engine.util;
  * https://gist.github.com/numberoverzero/8536341
  */
 public class RollingAverage {
-    private final float resolution;
+    private float resolution; // Length of one sample
 
     private float remainderDt;
     private float remainder;
@@ -19,7 +19,7 @@ public class RollingAverage {
     public RollingAverage(float duration, int samples) {
         this.samples = new float[samples];
         nSamples = samples;
-        resolution = duration / samples;
+        resolution = duration / nSamples;
     }
 
     private void advance() {
@@ -29,7 +29,19 @@ public class RollingAverage {
         remainder = remainderDt = 0;
     }
 
-    public void update(float v, float stepDt) {
+    public RollingAverage setDuration(float duration) {
+        // Scaling factor to translate remainderDt
+        float scale = duration / (resolution * nSamples);
+        resolution = duration / nSamples;
+        remainderDt *= scale;
+        return this;
+    }
+
+    public float getDuration() {
+        return resolution * nSamples;
+    }
+
+    public RollingAverage update(float v, float stepDt) {
         float stepWeight, delta = remainderDt + stepDt;
         while (delta >= resolution) {
             delta -= resolution;
@@ -39,9 +51,10 @@ public class RollingAverage {
         }
         remainder = ((remainder * remainderDt) + (v * (delta - remainderDt))) / delta;
         remainderDt = delta;
-        if(Float.isNaN(remainder)) {
+        if (Float.isNaN(remainder)) {
             remainder = remainderDt = 0;
         }
+        return this;
     }
 
     public float value() {

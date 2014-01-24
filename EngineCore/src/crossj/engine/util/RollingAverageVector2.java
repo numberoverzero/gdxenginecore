@@ -11,6 +11,16 @@ public class RollingAverageVector2 {
         y = new RollingAverage(duration, samples);
     }
 
+    public RollingAverageVector2 setDuration(float duration) {
+        x.setDuration(duration);
+        y.setDuration(duration);
+        return this;
+    }
+
+    public float getDuration() {
+        return x.getDuration();
+    }
+
     public RollingAverageVector2 update(Vector2 v, float stepDt) {
         x.update(v.x, stepDt);
         y.update(v.y, stepDt);
