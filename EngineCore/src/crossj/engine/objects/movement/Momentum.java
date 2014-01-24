@@ -57,11 +57,11 @@ public class Momentum {
     }
 
     public Vector2 getNormFocus() {
-        return tmp.set(focus).sub(position).nor();
+        return getFocus().nor();
     }
 
     public Vector2 getNormAvgFocus() {
-        return tmp.set(focusAverage.value()).sub(position).nor();
+        return getAvgFocus().nor();
     }
 
     /**
@@ -73,7 +73,7 @@ public class Momentum {
     public float getPctFocus() {
         tmp2.set(getNormAvgFocus());
         tmp3.set(getNormFocus());
-        return MathUtil.scalarProjection(position, tmp2, tmp3);
+        return MathUtil.scalarProjection(tmp2, tmp3);
     }
 
     public Vector2 getPosition() {
@@ -81,15 +81,11 @@ public class Momentum {
     }
 
     public Vector2 getAvgPosition() {
-        return tmp.set(positionAverage.value());
-    }
-
-    public Vector2 getNormPosition() {
-        return tmp.set(position).nor();
+        return tmp.set(positionAverage.value()).sub(position);
     }
 
     public Vector2 getNormAvgPosition() {
-        return tmp.set(positionAverage.value()).nor();
+        return getAvgPosition().nor();
     }
 
     /**
@@ -101,7 +97,7 @@ public class Momentum {
     public float getPctPosition() {
         tmp2.set(getNormAvgPosition());
         tmp3.set(getNormFocus());
-        return MathUtil.scalarProjection(position, tmp2, tmp3);
+        return MathUtil.scalarProjection(tmp2, tmp3);
     }
 
 }
