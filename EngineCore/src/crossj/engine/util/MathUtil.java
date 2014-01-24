@@ -87,6 +87,15 @@ public class MathUtil {
     }
 
     /**
+     * Returns the length of the scalar projection of a onto b, about [0, 0].
+     * from http://en.wikipedia.org/wiki/Scalar_projection
+     * s = a (dot) (unit vector of) b
+     */
+    public static float scalarProjection(Vector2 a, Vector2 b) {
+        return scalarProjection(Vector2.Zero, a, b);
+    }
+
+    /**
      * Returns the length of the scalar projection of a onto b, about some origin.
      * from http://en.wikipedia.org/wiki/Scalar_projection
      * s = a (dot) (unit vector of) b
