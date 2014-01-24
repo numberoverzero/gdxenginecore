@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MathUtil {
     private static final Vector2 tmp = new Vector2();
+    private static final Vector2 tmp2 = new Vector2();
 
     public static int max(int a, int b) {
         return a > b ? a : b;
@@ -83,5 +84,24 @@ public class MathUtil {
 
     public static Vector2 randomVector2(float minX, float maxX, float minY, float maxY) {
         return tmp.set(MathUtils.random(minX, maxX), MathUtils.random(minY, maxY));
+    }
+
+    /**
+     * Returns the length of the scalar projection of a onto b, about some origin.
+     * from http://en.wikipedia.org/wiki/Scalar_projection
+     * s = a (dot) (unit vector of) b
+     */
+    public static float scalarProjection(Vector2 origin, Vector2 a, Vector2 b) {
+        tmp.set(a).sub(origin);
+        tmp2.set(b).sub(origin).nor();
+        return tmp.dot(tmp2);
+    }
+
+    /**
+     * Normalized value of the scalar projection of a onto b.
+     * return value is on the interval [-1, 1]
+     */
+    public static float normalizedScalarProjection(Vector2 origin, Vector2 a, Vector2 b) {
+        return scalarProjection(origin, a, b) / b.dst(origin);
     }
 }

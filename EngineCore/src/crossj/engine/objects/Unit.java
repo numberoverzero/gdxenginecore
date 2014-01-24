@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import crossj.engine.actor.Actor;
 import crossj.engine.event.EventDispatcher;
+import crossj.engine.objects.movement.Mover;
 import crossj.engine.physics.WorldBody;
 
 public class Unit extends GameObject {

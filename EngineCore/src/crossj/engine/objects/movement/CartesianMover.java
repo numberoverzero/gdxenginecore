@@ -1,10 +1,10 @@
-package crossj.engine.objects;
+package crossj.engine.objects.movement;
 
 import com.badlogic.gdx.math.Vector2;
 
 import crossj.engine.physics.WorldBody;
 
-public class Mover {
+public class CartesianMover implements Mover {
     private final float maxSpeed;
     private final WorldBody body;
     private final Vector2 velocity = new Vector2();
@@ -21,7 +21,7 @@ public class Mover {
         }
     }
 
-    public Mover(WorldBody body, float maxSpeed) {
+    public CartesianMover(WorldBody body, float maxSpeed) {
         this.body = body;
         this.maxSpeed = maxSpeed;
     }
@@ -35,10 +35,12 @@ public class Mover {
         body.setLinearVelocity(tmp.set(netVelocity).limit(maxSpeed));
     }
 
+    @Override
     public void setPosition(Vector2 position) {
         body.setPosition(position);
     }
 
+    @Override
     public Vector2 getPosition() {
         return body.getPosition();
     }
