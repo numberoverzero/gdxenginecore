@@ -14,6 +14,7 @@ import crossj.engine.physics.World;
 import crossj.engine.physics.WorldBody;
 
 public class Physics {
+    static final Vector2 tmp = new Vector2();
     static BodyDef dynamicBodyDef, staticBodyDef;
     static FixtureDef circleFixtureDef;
     static CircleShape circleShape;
@@ -36,7 +37,7 @@ public class Physics {
     }
 
     public static WorldBody createDynamicCircle(World world, float radius, Vector2 position) {
-        dynamicBodyDef.position.set(world.toBox(position));
+        dynamicBodyDef.position.set(world.toBox(tmp.set(position)));
         WorldBody body = world.createBody(dynamicBodyDef);
         circleShape.setRadius(world.toBox(radius));
         body.getBox2DBody().createFixture(circleFixtureDef);
