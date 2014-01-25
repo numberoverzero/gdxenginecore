@@ -107,10 +107,21 @@ public class MathUtil {
      * Return the vector in polar coordinates, where v.x is radial coordinate
      * (usually r) and v.y is angular coordinate (usually theta)
      */
-    public static Vector2 asPolarVector(Vector2 v) {
+    public static Vector2 toPolar(Vector2 v) {
         float r = v.len();
         float theta = MathUtils.atan2(v.y, v.x);
-        return tmp.set(r, theta);
+        return v.set(r, theta);
+    }
+
+    /**
+     * Return the vector in cartesian coordinates
+     * @param v vector in polar coordinates
+     * @return
+     */
+    public static Vector2 toCartesian(Vector2 v) {
+        float x = v.x * MathUtils.cos(v.y);
+        float y = v.x * MathUtils.sin(v.y);
+        return v.set(x, y);
     }
 
     /**
