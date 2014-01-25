@@ -78,6 +78,23 @@ public class MathUtil {
         return v0 + t * (v1 - v0);
     }
 
+    public static float ilerp(float v, float v0, float v1) {
+        return (v - v0) / (v1 - v0);
+    }
+
+    /**
+     * Translate a value t from an interval:
+     *
+     * [src0, src1]
+     *
+     * to the interval
+     *
+     * [dst0, dst1]
+     */
+    public static float translate(float v, float src0, float src1, float dst0, float dst1) {
+        return lerp(ilerp(v, src0, src1), dst0, dst1);
+    }
+
     public static Vector2 randomVector2(float min, float max) {
         return randomVector2(min, max, min, max);
     }
@@ -87,18 +104,28 @@ public class MathUtil {
     }
 
     /**
+     * Return the vector in polar coordinates, where v.x is radial coordinate
+     * (usually r) and v.y is angular coordinate (usually theta)
+     */
+    public static Vector2 asPolarVector(Vector2 v) {
+        float r = v.len();
+        float theta = MathUtils.atan2(v.y, v.x);
+        return tmp.set(r, theta);
+    }
+
+    /**
      * Returns the length of the scalar projection of a onto b, about [0, 0].
-     * from http://en.wikipedia.org/wiki/Scalar_projection
-     * s = a (dot) (unit vector of) b
+     * from http://en.wikipedia.org/wiki/Scalar_projection s = a (dot) (unit
+     * vector of) b
      */
     public static float scalarProjection(Vector2 a, Vector2 b) {
         return scalarProjection(Vector2.Zero, a, b);
     }
 
     /**
-     * Returns the length of the scalar projection of a onto b, about some origin.
-     * from http://en.wikipedia.org/wiki/Scalar_projection
-     * s = a (dot) (unit vector of) b
+     * Returns the length of the scalar projection of a onto b, about some
+     * origin. from http://en.wikipedia.org/wiki/Scalar_projection s = a (dot)
+     * (unit vector of) b
      */
     public static float scalarProjection(Vector2 origin, Vector2 a, Vector2 b) {
         tmp.set(a).sub(origin);
@@ -107,8 +134,8 @@ public class MathUtil {
     }
 
     /**
-     * Normalized value of the scalar projection of a onto b.
-     * return value is on the interval [-1, 1]
+     * Normalized value of the scalar projection of a onto b. return value is on
+     * the interval [-1, 1]
      */
     public static float normalizedScalarProjection(Vector2 origin, Vector2 a, Vector2 b) {
         return scalarProjection(origin, a, b) / b.dst(origin);

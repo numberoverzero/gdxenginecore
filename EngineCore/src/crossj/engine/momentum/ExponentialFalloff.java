@@ -1,87 +1,76 @@
 package crossj.engine.momentum;
 
-import com.badlogic.gdx.math.Vector2;
+import crossj.engine.util.MathUtil;
 
 /**
  * Used for determining momentum for a given distance from origin along one
- * dimension. For the Falloff (xMin=1, xMax=10, yMin=10, yMax=100) any x value
- * less than 1 will return 100, any x value greater than 10 will return 10, and
- * any x value between 1 and 10 will return a value between 10 and 100 using an
- * exponential function calculated from the given endpoints.
+ * dimension. Falloff is calculated from the equation y = e^x - 1 where input is
+ * scaled from the given range to the fixed range [0, ln(65)] and output is
+ * scaled from the fixed range [0, 64] to the given output range.
  */
 public class ExponentialFalloff {
-    /**
-     * minInput, maxOutput
-     */
-    Vector2 p1 = new Vector2();
-
-    /**
-     * maxInput, minOutput
-     */
-    Vector2 p2 = new Vector2();
-
-    /**
-     * a, b
-     */
-    Vector2 eq = new Vector2();
+    float minInput, maxInput, minOutput, maxOutput;
+    static final float MIN_INPUT = 0, MAX_INPUT = (float) Math.log(65);
+    static final float MIN_OUTPUT = 0, MAX_OUTPUT = 64;
 
     public ExponentialFalloff(float minInput, float maxInput, float minOutput, float maxOutput) {
-        p1.set(minInput, maxOutput);
-        p2.set(maxInput, minOutput);
-        recalculate();
+        this.minInput = minInput;
+        this.maxInput = maxInput;
+
+        this.minOutput = minOutput;
+        this.maxOutput = maxOutput;
     }
 
     public float valueAt(float x) {
         x = Math.abs(x);
-        if (x < p1.x) {
-            return p1.y;
-        } else if (x > p2.x) {
-            return p2.y;
+        if (x < minInput) {
+            return maxOutput;
+        } else if (x > maxInput) {
+            return minOutput;
         } else {
-            return (float) (eq.x * Math.pow(eq.y, x));
+            // Flip input - e^x is monotonically increasing but we want small
+            // deltas to have a large value, and vice versa
+            x = maxInput - x;
+
+            // Translate x from [minInput, maxInput] to [MIN_INPUT, MAX_INPUT]
+            x = MathUtil.translate(x, minInput, maxInput, MIN_INPUT, MAX_INPUT);
+            x = (float) Math.exp(x) - 1;
+
+            // Translate from [MIN_OUTPUT, MAX_OUTPUT] to [minOutput, maxOutput]
+            return MathUtil.translate(x, MIN_OUTPUT, MAX_OUTPUT, minOutput, maxOutput);
         }
     }
 
-    private void recalculate() {
-        double b = Math.pow((p1.y / p2.y), (p2.x - p1.x));
-        double a = p2.y / Math.pow(b, p2.x);
-        eq.set((float) a, (float) b);
-    }
-
     public float getMinInput() {
-        return p1.x;
+        return minInput;
     }
 
     public void setMinInput(float minInput) {
-        p1.x = minInput;
-        recalculate();
+        this.minInput = minInput;
     }
 
     public float getMaxInput() {
-        return p2.x;
+        return maxInput;
     }
 
     public void setMaxInput(float maxInput) {
-        p2.x = maxInput;
-        recalculate();
+        this.maxInput = maxInput;
     }
 
     public float getMinOutput() {
-        return p2.y;
+        return minOutput;
     }
 
     public void setMinOutput(float minOutput) {
-        p2.y = minOutput;
-        recalculate();
+        this.minOutput = minOutput;
     }
 
     public float getMaxOutput() {
-        return p1.y;
+        return maxOutput;
     }
 
     public void setMaxOutput(float maxOutput) {
-        p1.y = maxOutput;
-        recalculate();
+        this.maxOutput = maxOutput;
     }
 
 }
