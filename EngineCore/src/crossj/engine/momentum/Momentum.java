@@ -42,9 +42,19 @@ public class Momentum {
         MathUtil.toPolar(tmpFocusAverage.set(focusAverage.value()));
         MathUtil.toPolar(tmpFocus.set(focus));
 
-        // Compute falloff of average's distance from focus
-        momentum.x = radialFalloff.valueAt(tmpFocusAverage.x - tmpFocus.x);
-        momentum.y = angularFalloff.valueAt(tmpFocusAverage.y - tmpFocus.y);
+        // Compute falloff of average's radial distance from focus
+        float deltaRadius = tmpFocusAverage.x - tmpFocus.x;
+        momentum.x = radialFalloff.valueAt(deltaRadius);
+
+        // Compute falloff of average's angle from focus
+        // NOTE: correction is necessary when deltaAngle > PI because atan2
+        // returns values on [-PI, PI] and we want the smallest angle between
+        // them, not the angle from origin
+        float deltaAngle = Math.abs(tmpFocusAverage.y - tmpFocus.y);
+        if (deltaAngle >= MathUtils.PI) {
+            deltaAngle = MathUtils.PI2 - deltaAngle;
+        }
+        momentum.y = angularFalloff.valueAt(deltaAngle);
     }
 
     public float getRadialMomentum() {
@@ -69,6 +79,14 @@ public class Momentum {
 
     public ExponentialFalloff getAngularFalloff() {
         return angularFalloff;
+    }
+
+    public float getDuration() {
+        return focusAverage.getDuration();
+    }
+
+    public void setDuration(float duration) {
+        focusAverage.setDuration(duration);
     }
 
 }
