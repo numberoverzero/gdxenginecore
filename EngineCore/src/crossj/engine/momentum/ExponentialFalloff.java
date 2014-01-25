@@ -32,6 +32,7 @@ public class ExponentialFalloff {
     }
 
     public float valueAt(float x) {
+        x = Math.abs(x);
         if (x < p1.x) {
             return p1.y;
         } else if (x > p2.x) {
