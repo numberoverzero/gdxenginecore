@@ -22,15 +22,13 @@ public class Momentum {
         int samples = 16;
         focusAverage = new RollingAverageVector2(duration, samples);
 
-        // Further than 100 units away = 1 momentum
-        // Closer than 10 units away = 2 momentum
-        System.out.println("Radial falloff");
-        radialFalloff = new ExponentialFalloff(0, 150, 0, 1);
+        // Further than 60 units away = 0 momentum
+        // Closer than 15 units away = 1 momentum
+        radialFalloff = new ExponentialFalloff(15, 60, 0, 1);
 
-        // Further than 1 degrees away = 1 momentum
-        // Closer than 5 degrees away = 2 momentum
-        System.out.println("Angular falloff");
-        angularFalloff = new ExponentialFalloff(0 * MathUtils.degreesToRadians, 45 * MathUtils.degreesToRadians, 0, 1);
+        // Further than 25 degrees away = 0 momentum
+        // Closer than 5 degrees away = 1 momentum
+        angularFalloff = new ExponentialFalloff(5 * MathUtils.degreesToRadians, 25 * MathUtils.degreesToRadians, 0, 1);
     }
 
     public void update(Vector2 focus, float stepDt) {
@@ -41,8 +39,8 @@ public class Momentum {
 
     private void recalculate() {
         // Convert to polar coordinates for radial/angular falloff calculation
-        tmpFocusAverage.set(MathUtil.asPolarVector(focusAverage.value()));
-        tmpFocus.set(MathUtil.asPolarVector(focus));
+        MathUtil.toPolar(tmpFocusAverage.set(focusAverage.value()));
+        MathUtil.toPolar(tmpFocus.set(focus));
 
         // Compute falloff of average's distance from focus
         momentum.x = radialFalloff.valueAt(tmpFocusAverage.x - tmpFocus.x);
@@ -63,6 +61,14 @@ public class Momentum {
 
     public Vector2 getFocusAverage() {
         return focusAverage.value();
+    }
+
+    public ExponentialFalloff getRadialFalloff() {
+        return radialFalloff;
+    }
+
+    public ExponentialFalloff getAngularFalloff() {
+        return angularFalloff;
     }
 
 }
