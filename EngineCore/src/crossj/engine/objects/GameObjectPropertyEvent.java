@@ -1,7 +1,6 @@
-package crossj.engine.events;
+package crossj.engine.objects;
 
 import crossj.engine.event.Event;
-import crossj.engine.objects.GameObject;
 
 public class GameObjectPropertyEvent<T> extends Event<GameObjectListener> {
 

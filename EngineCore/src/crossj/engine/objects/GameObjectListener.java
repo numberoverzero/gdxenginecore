@@ -1,6 +1,5 @@
-package crossj.engine.events;
+package crossj.engine.objects;
 
-import crossj.engine.objects.GameObject;
 
 public interface GameObjectListener {
 
