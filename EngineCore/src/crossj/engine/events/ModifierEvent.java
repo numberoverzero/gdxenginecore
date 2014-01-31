@@ -6,24 +6,37 @@ import crossj.engine.objects.Modifier;
 
 public class ModifierEvent extends Event<ModiferListener> {
 
-    private GameObject gameObject;
-    private Modifier modifier;
-    private Modifier.EventType type;
+    public GameObject object = null;
+    public Modifier modifier = null;
+    public Modifier.EventType type = null;
     public boolean active = false;
 
-    public ModifierEvent(GameObject gameObject, Modifier modifier, Modifier.EventType type) {
-        this.gameObject = gameObject;
+    public ModifierEvent() {
+    }
+
+    public ModifierEvent(GameObject object, Modifier modifier, Modifier.EventType type) {
+        this.object = object;
         this.modifier = modifier;
         this.type = type;
+    }
+
+    /**
+     * Set all fields of the event
+     */
+    public ModifierEvent set(GameObject object, Modifier modifier, Modifier.EventType type) {
+        this.object = object;
+        this.modifier = modifier;
+        this.type = type;
+        return this;
     }
 
     @Override
     public boolean notify(ModiferListener listener) {
         switch (type) {
         case APPLIED:
-            return listener.onModiferApplied(gameObject, modifier);
+            return listener.onModiferApplied(object, modifier);
         case REMOVED:
-            return listener.onModifierRemoved(gameObject, modifier);
+            return listener.onModifierRemoved(object, modifier);
         default:
             return false;
         }
@@ -31,10 +44,9 @@ public class ModifierEvent extends Event<ModiferListener> {
 
     @Override
     public ModifierEvent reset() {
-        gameObject = null;
+        object = null;
         modifier = null;
         type = null;
-        active = false;
         return this;
     }
 

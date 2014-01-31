@@ -25,20 +25,27 @@ public abstract class Modifier extends GameObject {
         return name;
     }
 
-    public void apply(GameObject gameObject, boolean notify) {
-        gameObject.getModifiers().add(this);
+    public void apply(GameObject object, boolean notify) {
+        object.getModifiers().add(this);
         if (notify) {
-            gameObject.getEventDispatcher().notify(new ModifierEvent(gameObject, this, EventType.APPLIED));
+            notify(object, EventType.APPLIED);
         }
     }
 
-    public void remove(GameObject gameObject, boolean notify, boolean dispose) {
-        gameObject.getModifiers().remove(this);
+    public void remove(GameObject object, boolean notify) {
+        object.getModifiers().remove(this);
         if (notify) {
-            gameObject.getEventDispatcher().notify(new ModifierEvent(gameObject, this, EventType.REMOVED));
+            notify(object, EventType.REMOVED);
         }
-        if (dispose) {
-            dispose();
-        }
+    }
+
+    private void notify(GameObject object, EventType type) {
+        EventDispatcher dispatcher = object.getEventDispatcher();
+        ModifierEvent event = dispatcher.acquire(ModifierEvent.class);
+        event.set(object, this, type);
+        event.active = true;
+        dispatcher.notify(event);
+        event.active = false;
+        dispatcher.release(event);
     }
 }

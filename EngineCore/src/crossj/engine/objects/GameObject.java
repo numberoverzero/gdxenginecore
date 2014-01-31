@@ -7,11 +7,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
 import crossj.engine.event.EventDispatcher;
-import crossj.engine.events.GameObjectPropertyEvent;
 
 /**
  * Anything managed in a game screen, including buffs, debuffs, buildings,
- * units, quests, points of interest
+ * units, quests, points of interest, meta objects (xp modifiers, achievements)
  */
 public abstract class GameObject implements Disposable {
     private final EventDispatcher eventDispatcher;
@@ -35,7 +34,7 @@ public abstract class GameObject implements Disposable {
     @Override
     public void dispose() {
         while (!modifiers.isEmpty()) {
-            modifiers.get(0).remove(this, false, true);
+            modifiers.get(0).remove(this, false);
         }
     }
 
