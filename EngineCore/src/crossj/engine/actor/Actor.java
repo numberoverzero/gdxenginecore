@@ -4,9 +4,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
-import crossj.engine.objects.GameObject;
-import crossj.engine.objects.Unit;
-
 public interface Actor extends Disposable {
 
     void setEnabled(boolean enabled);
@@ -24,10 +21,7 @@ public interface Actor extends Disposable {
     void setOrigin(Vector2 origin);
 
     /**
-     * The tracking object which the actor should render against. For a
-     * {@link Unit}, this is usually the unit itself (
-     * {@link Tracker#track(GameObject)}), which results in the actor tracking
-     * the physics object (or whatever {@link Unit#getPosition()} returns).
+     * The tracking object which the actor should render against.
      */
     Tracker getTracker();
 
