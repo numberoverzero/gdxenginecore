@@ -2,7 +2,6 @@ package crossj.engine.objects.modifier;
 
 import crossj.engine.event.Event;
 import crossj.engine.objects.GameObject;
-import crossj.engine.objects.Modifier;
 
 public class ModifierEvent extends Event<ModiferListener> {
 

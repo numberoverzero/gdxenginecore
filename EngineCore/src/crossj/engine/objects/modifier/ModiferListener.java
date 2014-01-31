@@ -1,7 +1,6 @@
 package crossj.engine.objects.modifier;
 
 import crossj.engine.objects.GameObject;
-import crossj.engine.objects.Modifier;
 
 public interface ModiferListener {
 

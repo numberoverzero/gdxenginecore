@@ -1,7 +1,7 @@
-package crossj.engine.objects;
+package crossj.engine.objects.modifier;
 
 import crossj.engine.event.EventDispatcher;
-import crossj.engine.objects.modifier.ModifierEvent;
+import crossj.engine.objects.GameObject;
 
 /**
  * A single modifier object can be used for multiple units.
