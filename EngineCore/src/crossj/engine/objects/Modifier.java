@@ -39,6 +39,15 @@ public abstract class Modifier extends GameObject {
         }
     }
 
+    /**
+     * Return true if the modifier's value for the given field matches expected
+     * value - false otherwise. Returns false if the field is not present or the
+     * provided value is not comparable.
+     */
+    public <T> boolean match(String field, T value) {
+        return false;
+    }
+
     private void notify(GameObject object, EventType type) {
         EventDispatcher dispatcher = object.getEventDispatcher();
         ModifierEvent event = dispatcher.acquire(ModifierEvent.class);
