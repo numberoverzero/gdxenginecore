@@ -1,7 +1,7 @@
 package crossj.engine.objects;
 
 import crossj.engine.event.EventDispatcher;
-import crossj.engine.events.ModifierEvent;
+import crossj.engine.objects.modifier.ModifierEvent;
 
 /**
  * A single modifier object can be used for multiple units.

@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
 import crossj.engine.objects.GameObject;
-import crossj.engine.objects.Tracker;
 import crossj.engine.objects.Unit;
 
 public interface Actor extends Disposable {

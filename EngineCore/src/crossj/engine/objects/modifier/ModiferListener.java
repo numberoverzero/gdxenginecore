@@ -1,4 +1,4 @@
-package crossj.engine.events;
+package crossj.engine.objects.modifier;
 
 import crossj.engine.objects.GameObject;
 import crossj.engine.objects.Modifier;

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-import crossj.engine.objects.Tracker;
 import crossj.engine.util.MathUtil;
 
 public class StaticTextActor implements Actor {

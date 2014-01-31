@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
 import crossj.engine.event.EventDispatcher;
+import crossj.engine.objects.property.GameObjectPropertyEvent;
 
 /**
  * Anything managed in a game screen, including buffs, debuffs, buildings,
@@ -62,6 +63,11 @@ public abstract class GameObject implements Disposable {
      *            invoked)
      */
     protected <T> void onPropertyChange(String property, T oldValue, T newValue) {
-        getEventDispatcher().notify(new GameObjectPropertyEvent<T>(this, property, oldValue, newValue));
+        GameObjectPropertyEvent event = getEventDispatcher().acquire(GameObjectPropertyEvent.class);
+        event.set(this, property, oldValue, newValue);
+        event.active = true;
+        getEventDispatcher().notify(event);
+        event.active = false;
+        getEventDispatcher().release(event);
     }
 }
