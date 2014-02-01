@@ -12,17 +12,17 @@ public class PoolBuffer<E extends Poolable<E>> implements Disposable {
         top = null;
     }
 
-    public E push(E e) {
+    public synchronized E push(E e) {
         e.setNext(top);
         top = e;
         return top;
     }
 
-    public E peek() {
+    public synchronized E peek() {
         return top;
     }
 
-    public E pop() {
+    public synchronized E pop() {
         E tmp = top;
         top = top.getNext();
         return tmp;

@@ -1,6 +1,5 @@
 package crossj.engine.pool;
 
-
 public interface Poolable<E> {
     E getNext();
 
@@ -8,5 +7,8 @@ public interface Poolable<E> {
 
     boolean isActive();
 
+    /**
+     * It is ok for a poolable to be activated when reset.
+     */
     E reset();
 }

@@ -5,13 +5,16 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.utils.Disposable;
 
+import crossj.engine.pool.Poolable;
+
 /**
  * Wrapper around {@link Body} which interacts in world coordinates, internally
  * translating to Box2D coordinates where appropriate
  */
-public class WorldBody implements Disposable {
+public class WorldBody implements Poolable<WorldBody>, Disposable {
     private final World world;
     private final Body body;
+    private WorldBody poolNext = null;
 
     public WorldBody(Body body, World world) {
         this.world = world;
@@ -95,6 +98,30 @@ public class WorldBody implements Disposable {
     public boolean contains(Fixture fixture) {
         Body fBody = fixture.getBody();
         return fBody == null ? false : equals(fBody.getUserData());
+    }
+
+    @Override
+    public boolean isActive() {
+        return body.isActive();
+    }
+
+    @Override
+    public void setNext(WorldBody next) {
+        poolNext = next;
+    }
+
+    @Override
+    public WorldBody getNext() {
+        return poolNext;
+    }
+
+    @Override
+    public WorldBody reset() {
+        body.setActive(true);
+        body.setAngularVelocity(0);
+        body.setLinearVelocity(0, 0);
+        body.resetMassData();
+        return this;
     }
 
 }
