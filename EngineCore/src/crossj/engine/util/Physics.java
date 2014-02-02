@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
@@ -64,7 +65,8 @@ public class Physics {
         staticBodyDef.position.set(world.toBox(center));
         WorldBody body = world.createBody(staticBodyDef);
         rectangleShape.setAsBox(world.toBox(dimensions.x) / 2, world.toBox(dimensions.y) / 2);
-        body.getBox2DBody().createFixture(rectangleShape, 0.0f);
+        Fixture fix = body.getBox2DBody().createFixture(rectangleShape, 0.0f);
+        fix.setUserData(body);
         return body;
     }
 
