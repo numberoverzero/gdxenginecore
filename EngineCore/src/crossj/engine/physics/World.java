@@ -157,10 +157,9 @@ public class World implements Disposable {
      *
      * @return
      */
-    private Box2DDebugRenderer getDebugRenderer() {
+    public Box2DDebugRenderer getDebugRenderer() {
         if (debugRenderer == null) {
             debugRenderer = new Box2DDebugRenderer();
-            debugRenderer.setDrawContacts(true);
         }
         return debugRenderer;
     }
