@@ -30,7 +30,11 @@ public class World implements Disposable {
 
     com.badlogic.gdx.physics.box2d.World world;
     private float accumulator; // http://gafferongames.com/game-physics/fix-your-timestep/
-    private final List<WorldBody> managedBodies;
+
+    // Automatically handle activating and deactivating bodies while stepping
+    private boolean locked = false;
+    private final List<WorldBody> toActivate;
+    private final List<WorldBody> toDeactivate;
 
     public World() {
         this(new Vector2());
@@ -44,7 +48,8 @@ public class World implements Disposable {
         boxToWorld = DEFAULT_BOX_TO_WORLD;
         velocityIterations = DEFAULT_BOX_VELOCITY_ITERATIONS;
         positionIterations = DEFAULT_BOX_POSITION_ITERATIONS;
-        managedBodies = new ArrayList<>();
+        toActivate = new ArrayList<>();
+        toDeactivate = new ArrayList<>();
         tmp1 = new Vector2();
         tmp2 = new Vector2();
     }
@@ -61,51 +66,51 @@ public class World implements Disposable {
         return world.getGravity();
     }
 
-    public void step(float delta) {
+    public synchronized void step(float delta) {
+        locked = true;
         accumulator += delta;
         while (accumulator > step) {
             world.step(step, velocityIterations, positionIterations);
             accumulator -= step;
         }
+        locked = false;
+
+        for (WorldBody body : toActivate) {
+            setActive(body, true);
+        }
+
+        toActivate.clear();
+        for (WorldBody body : toDeactivate) {
+            setActive(body, false);
+        }
+        toDeactivate.clear();
+    }
+
+    public synchronized void setActive(WorldBody body, boolean active) {
+        if (locked) {
+            (active ? toActivate : toDeactivate).add(body);
+        } else {
+            body.getBox2DBody().setActive(active);
+        }
     }
 
     @Override
     public void dispose() {
-        managedBodies.clear();
         world.dispose();
         getDebugRenderer().dispose();
     }
 
     /**
-     * Creates a managed body.
+     * Create a body
      */
     public WorldBody createBody(BodyDef def) {
-        return createBody(def, true);
-    }
-
-    /**
-     * Create a body, and optionally allow the world to manage it. If the world
-     * is restarted, for instance, all managed bodies will be destroyed.
-     */
-    public WorldBody createBody(BodyDef def, boolean manageBody) {
         Body body = world.createBody(def);
         WorldBody wBody = new WorldBody(body, this);
-        if (manageBody) {
-            managedBodies.add(wBody);
-        }
         return wBody;
     }
 
     public void destroyBody(WorldBody body) {
-        managedBodies.remove(body);
         world.destroyBody(body.getBox2DBody());
-    }
-
-    public void restart() {
-        for (WorldBody wBody : managedBodies) {
-            world.destroyBody(wBody.getBox2DBody());
-        }
-        managedBodies.clear();
     }
 
     public float toBoxScale() {

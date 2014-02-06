@@ -105,6 +105,10 @@ public class WorldBody implements Poolable<WorldBody>, Disposable {
         return body.isActive();
     }
 
+    public void setActive(boolean active) {
+        world.setActive(this, active);
+    }
+
     @Override
     public void setNext(WorldBody next) {
         poolNext = next;

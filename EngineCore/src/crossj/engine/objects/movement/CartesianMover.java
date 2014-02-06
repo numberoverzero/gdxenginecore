@@ -26,8 +26,8 @@ public class CartesianMover implements Mover {
         this.maxSpeed = maxSpeed;
     }
 
-    public void setInput(Direction direction, boolean pressed) {
-        velocity.set(direction.unit).scl(pressed ? maxSpeed : -maxSpeed);
+    public void setInput(Direction direction, boolean keyDown) {
+        velocity.set(direction.unit).scl(keyDown ? maxSpeed : -maxSpeed);
         netVelocity.add(velocity);
     }
 
