@@ -110,20 +110,16 @@ public class WorldBody implements Poolable<WorldBody>, Disposable {
 
     @Override
     public boolean isActive() {
-        return deferredActiveChange != 0 ? deferredActiveChange > 0 : body.isActive();
+        return body.isActive();
     }
 
     public void setActive(boolean active) {
-        // Don't take any action if there's no change
-        if(active == isActive()) {
-            return;
-        }
-
         if (world.locked()) {
             deferredActiveChange += active ? 1 : -1;
-        } else {
-            body.setActive(active);
+            return;
         }
+        deferredActiveChange = 0;
+        body.setActive(active);
         onSetActive(active);
     }
 
@@ -132,11 +128,8 @@ public class WorldBody implements Poolable<WorldBody>, Disposable {
     }
 
     public void update(float delta) {
-        if(deferredActiveChange != 0) {
-            if(!world.locked()) {
-                body.setActive(deferredActiveChange > 0);
-                deferredActiveChange = 0;
-            }
+        if (deferredActiveChange != 0 && !world.locked()) {
+            setActive(deferredActiveChange > 0);
         }
     }
 
