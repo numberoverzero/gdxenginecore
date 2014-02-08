@@ -16,6 +16,14 @@ public class WorldBody implements Poolable<WorldBody>, Disposable {
     private final Body body;
     private WorldBody poolNext = null;
 
+    /**
+     * Used to track activates and deactivates while world is locked. If this
+     * number is greater than 0 the next time update is called, it will be
+     * activated. If this number is less than 0 the next time update is called,
+     * it will be activated. Also used when calling {@link #isActive()}
+     */
+    private int deferredActiveChange = 0;
+
     public WorldBody(Body body, World world) {
         this.world = world;
         this.body = body;
@@ -102,11 +110,34 @@ public class WorldBody implements Poolable<WorldBody>, Disposable {
 
     @Override
     public boolean isActive() {
-        return body.isActive();
+        return deferredActiveChange != 0 ? deferredActiveChange > 0 : body.isActive();
     }
 
     public void setActive(boolean active) {
-        world.setActive(this, active);
+        // Don't take any action if there's no change
+        if(active == isActive()) {
+            return;
+        }
+
+        if (world.locked()) {
+            deferredActiveChange += active ? 1 : -1;
+        } else {
+            body.setActive(active);
+        }
+        onSetActive(active);
+    }
+
+    public void onSetActive(boolean active) {
+
+    }
+
+    public void update(float delta) {
+        if(deferredActiveChange != 0) {
+            if(!world.locked()) {
+                body.setActive(deferredActiveChange > 0);
+                deferredActiveChange = 0;
+            }
+        }
     }
 
     @Override

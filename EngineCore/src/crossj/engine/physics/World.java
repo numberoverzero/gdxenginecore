@@ -1,8 +1,5 @@
 package crossj.engine.physics;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
@@ -34,8 +31,6 @@ public class World implements Disposable {
 
     // Automatically handle activating and deactivating bodies while stepping
     private boolean locked = false;
-    private final List<WorldBody> toActivate;
-    private final List<WorldBody> toDeactivate;
 
     public World() {
         this(new Vector2());
@@ -48,8 +43,6 @@ public class World implements Disposable {
         boxToWorld = DEFAULT_BOX_TO_WORLD;
         velocityIterations = DEFAULT_BOX_VELOCITY_ITERATIONS;
         positionIterations = DEFAULT_BOX_POSITION_ITERATIONS;
-        toActivate = new ArrayList<>();
-        toDeactivate = new ArrayList<>();
         tmp1 = new Vector2();
         tmp2 = new Vector2();
     }
@@ -66,7 +59,7 @@ public class World implements Disposable {
         return world.getGravity();
     }
 
-    public synchronized void step(float delta) {
+    public void step(float delta) {
         // Lock the world, update in discrete time steps
         locked = true;
         discretizer.update(delta);
@@ -74,25 +67,10 @@ public class World implements Disposable {
             world.step(discretizer.getStepSize(), velocityIterations, positionIterations);
         }
         locked = false;
-
-        // execute delayed (de)activates that were queued during locked world
-        // step.
-        for (WorldBody body : toActivate) {
-            setActive(body, true);
-        }
-        toActivate.clear();
-        for (WorldBody body : toDeactivate) {
-            setActive(body, false);
-        }
-        toDeactivate.clear();
     }
 
-    public synchronized void setActive(WorldBody body, boolean active) {
-        if (locked) {
-            (active ? toActivate : toDeactivate).add(body);
-        } else {
-            body.getBox2DBody().setActive(active);
-        }
+    public boolean locked() {
+        return locked;
     }
 
     @Override
