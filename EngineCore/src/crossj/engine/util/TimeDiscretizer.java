@@ -55,4 +55,12 @@ public class TimeDiscretizer {
         }
         return false;
     }
+
+    /**
+     * Reset accumulator and stepCount
+     */
+    public void clear() {
+        stepCount = 0;
+        accumulator = 0;
+    }
 }
