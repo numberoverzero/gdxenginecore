@@ -134,6 +134,13 @@ public class EventDispatcher implements Disposable {
         pool.release(event);
     }
 
+    /**
+     * The set of event pools used for acquiring events
+     */
+    public EventPool getPool() {
+        return pool;
+    }
+
     @Override
     @SuppressWarnings("rawtypes")
     public void dispose() {

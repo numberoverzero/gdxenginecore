@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.Disposable;
 
 import crossj.engine.physics.raycasting.RayCastCallback;
+import crossj.engine.util.TimeDiscretizer;
 
 public class World implements Disposable {
     private static final float DEFAULT_BOX_STEP = 1 / 60f;
@@ -22,14 +23,14 @@ public class World implements Disposable {
     private static final float DEFAULT_BOX_TO_WORLD = 100f;
     private static final float ZERO = 1f / (1 << 16);
 
-    private final float step, worldToBox, boxToWorld;
+    private final float worldToBox, boxToWorld;
     private final int velocityIterations, positionIterations;
     private final Vector2 tmp1, tmp2;
 
     private Box2DDebugRenderer debugRenderer;
 
     com.badlogic.gdx.physics.box2d.World world;
-    private float accumulator; // http://gafferongames.com/game-physics/fix-your-timestep/
+    private final TimeDiscretizer discretizer;
 
     // Automatically handle activating and deactivating bodies while stepping
     private boolean locked = false;
@@ -41,9 +42,8 @@ public class World implements Disposable {
     }
 
     public World(Vector2 gravity) {
-        accumulator = 0;
         world = new com.badlogic.gdx.physics.box2d.World(gravity, true);
-        step = DEFAULT_BOX_STEP;
+        discretizer = new TimeDiscretizer(DEFAULT_BOX_STEP);
         worldToBox = DEFAULT_WORLD_TO_BOX;
         boxToWorld = DEFAULT_BOX_TO_WORLD;
         velocityIterations = DEFAULT_BOX_VELOCITY_ITERATIONS;
@@ -67,18 +67,19 @@ public class World implements Disposable {
     }
 
     public synchronized void step(float delta) {
+        // Lock the world, update in discrete time steps
         locked = true;
-        accumulator += delta;
-        while (accumulator > step) {
-            world.step(step, velocityIterations, positionIterations);
-            accumulator -= step;
+        discretizer.update(delta);
+        while (discretizer.step()) {
+            world.step(discretizer.getStepSize(), velocityIterations, positionIterations);
         }
         locked = false;
 
+        // execute delayed (de)activates that were queued during locked world
+        // step.
         for (WorldBody body : toActivate) {
             setActive(body, true);
         }
-
         toActivate.clear();
         for (WorldBody body : toDeactivate) {
             setActive(body, false);
