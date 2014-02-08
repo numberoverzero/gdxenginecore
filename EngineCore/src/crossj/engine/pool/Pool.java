@@ -55,7 +55,6 @@ public class Pool<E extends Poolable<E>> implements Disposable {
         if (e == null) {
             return;
         }
-        assert !e.isActive();
         buffer.push(e);
     }
 
