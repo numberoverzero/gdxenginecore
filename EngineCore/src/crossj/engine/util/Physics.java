@@ -41,7 +41,8 @@ public class Physics {
         dynamicBodyDef.position.set(world.toBox(tmp.set(position)));
         WorldBody body = world.createBody(dynamicBodyDef);
         circleShape.setRadius(world.toBox(radius));
-        body.getBox2DBody().createFixture(circleFixtureDef);
+        Fixture fix = body.getBox2DBody().createFixture(circleFixtureDef);
+        fix.setUserData(body);
         return body;
     }
 
@@ -49,7 +50,8 @@ public class Physics {
         staticBodyDef.position.set(world.toBox(position));
         WorldBody body = world.createBody(staticBodyDef);
         circleShape.setRadius(world.toBox(radius));
-        body.getBox2DBody().createFixture(circleFixtureDef);
+        Fixture fix = body.getBox2DBody().createFixture(circleFixtureDef);
+        fix.setUserData(body);
         return body;
     }
 
@@ -57,7 +59,8 @@ public class Physics {
         dynamicBodyDef.position.set(world.toBox(position));
         WorldBody body = world.createBody(dynamicBodyDef);
         rectangleShape.setAsBox(world.toBox(dimensions.x) / 2, world.toBox(dimensions.y) / 2);
-        body.getBox2DBody().createFixture(rectangleShape, 0.0f);
+        Fixture fix = body.getBox2DBody().createFixture(rectangleShape, 0.0f);
+        fix.setUserData(body);
         return body;
     }
 
