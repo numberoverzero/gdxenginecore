@@ -63,10 +63,9 @@ public abstract class Screen2D implements Screen, InputProcessor {
 
     private void renderDebugInfo(float delta) {
         Graphics.unproject(camera, 0, 0, debugPos);
-        String text = "Screen: " + debugName + "\n" + "FPS: " + Gdx.graphics.getFramesPerSecond();
-
+        spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
-        debugFont.drawMultiLine(spriteBatch, text, debugPos.x, debugPos.y);
+        debugFont.drawMultiLine(spriteBatch, getDebugString(), debugPos.x, debugPos.y);
         spriteBatch.end();
     }
 
@@ -84,6 +83,11 @@ public abstract class Screen2D implements Screen, InputProcessor {
     @Override
     public final String getDebugName() {
         return debugName;
+    }
+
+    public String getDebugString() {
+        return "Resolution: " + (int)camera.viewportWidth + "x" + (int)camera.viewportHeight
+                + " | " + "FPS: " + Gdx.graphics.getFramesPerSecond() + " | " + "Screen: " + debugName;
     }
 
     @Override
