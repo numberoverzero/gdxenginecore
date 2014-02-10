@@ -44,15 +44,26 @@ public class TTFontCache implements Disposable {
      * Remove a font (all sizes) from the cache
      */
     public void remove(String name) {
-        generators.remove(name);
-        bitmapFonts.remove(name);
+        FreeTypeFontGenerator generator = generators.remove(name);
+        if (generator != null) {
+            generator.dispose();
+        }
+        Map<Integer, BitmapFont> fonts = bitmapFonts.remove(name);
+        if (fonts != null) {
+            for (BitmapFont font : fonts.values()) {
+                font.dispose();
+            }
+        }
     }
 
     /**
      * Remove a font of a specific size from the cache
      */
     public void remove(String name, int size) {
-        getBitmapFonts(name).remove(size);
+        BitmapFont font = getBitmapFonts(name).remove(size);
+        if (font != null) {
+            font.dispose();
+        }
     }
 
     /**
@@ -78,7 +89,7 @@ public class TTFontCache implements Disposable {
 
     /**
      * The set of all sizes for a given font
-     * 
+     *
      * @param name
      * @return
      */
@@ -96,11 +107,10 @@ public class TTFontCache implements Disposable {
     }
 
     private BitmapFont getBitmapFont(String name, int size) {
-        Map<Integer, BitmapFont> fonts = getBitmapFonts(name);
-        BitmapFont font = fonts.get(size);
+        BitmapFont font = getBitmapFonts(name).get(size);
         if (font == null) {
             font = generators.get(name).generateFont(size);
-            fonts.put(size, font);
+            getBitmapFonts(name).put(size, font);
         }
         return font;
     }
@@ -108,15 +118,7 @@ public class TTFontCache implements Disposable {
     @Override
     public void dispose() {
         for (String name : getFonts()) {
-            Map<Integer, BitmapFont> bitmapFonts = getBitmapFonts(name);
-            for (int size : getFontSizes(name)) {
-                BitmapFont font = bitmapFonts.get(size);
-                font.dispose();
-            }
-            FreeTypeFontGenerator generator = generators.get(name);
-            generator.dispose();
+            remove(name);
         }
-        bitmapFonts = null;
-        generators = null;
     }
 }
