@@ -29,8 +29,12 @@ public class EventPool implements Disposable {
         this.behavior = behavior;
     }
 
-    @SuppressWarnings("unchecked")
     public <T extends Event<?>> void addType(Class<T> type, Callable<T> factory) {
+        addType(type, factory, size, behavior);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Event<?>> void addType(Class<T> type, Callable<T> factory, int size, PoolBehavior behavior) {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null");
         } else if (pools.containsKey(type)) {
@@ -38,6 +42,7 @@ public class EventPool implements Disposable {
         }
         pools.put(type, new Pool<Event<?>>(size, behavior, (Callable<Event<?>>)factory));
     }
+
 
     @SuppressWarnings("unchecked")
     public <T extends Event<?>> T acquire(Class<T> type) {
