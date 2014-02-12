@@ -39,7 +39,7 @@ public abstract class Screen2D implements Screen, InputProcessor {
         eventDispatcher = new EventDispatcher();
 
         fonts = new TTFontCache();
-        fonts.add("open-sans", "data/OpenSans-Regular.ttf");
+        fonts.add("open-sans", Gdx.files.internal("data/OpenSans-Regular.ttf"));
         debugFont = fonts.get("open-sans", 18);
     }
 
