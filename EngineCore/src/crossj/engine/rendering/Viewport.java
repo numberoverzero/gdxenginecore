@@ -1,7 +1,10 @@
 package crossj.engine.rendering;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * This allows the orthographic camera to keep width and height fixed to the
@@ -12,14 +15,18 @@ import com.badlogic.gdx.math.Rectangle;
  * -ratio-with-different-resolutions-using-libgdx/
  */
 public class Viewport {
+    public final OrthographicCamera camera;
     private final Rectangle viewport = new Rectangle();
     private final int referenceWidth, referenceHeight;
     private final float referenceRatio;
-    public float scale = 1;
+
+    private static Vector3 tmp = new Vector3();
 
     public Viewport(int referenceWidth, int referenceHeight) {
         this.referenceWidth = referenceWidth;
         this.referenceHeight = referenceHeight;
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, referenceWidth, referenceHeight);
         referenceRatio = (float) referenceWidth / (float) referenceHeight;
     }
 
@@ -28,7 +35,7 @@ public class Viewport {
      */
     public void resize(int width, int height) {
         float aspectRatio = (float) width / (float) height;
-        scale = 1f;
+        float scale = 1f;
         float x = 0, y = 0;
 
         if (aspectRatio > referenceRatio) {
@@ -65,6 +72,25 @@ public class Viewport {
      */
     public int getReferenceHeight() {
         return referenceHeight;
+    }
+
+    /**
+     * Project a point from world coordinates to screen coordinates for a given
+     * camera
+     */
+    public void project(Vector2 point) {
+        camera.project(tmp.set(point.x, point.y, 0), viewport.x, viewport.y, viewport.width, viewport.height);
+        point.set(tmp.x, tmp.y);
+    }
+
+    /**
+     * Unproject a point from screen coordinates to world coordinates for a
+     * given camera
+     */
+    public void unproject(Vector2 point) {
+        camera.unproject(tmp.set(point.x, point.y, 0), viewport.x, viewport.y, viewport.width, viewport.height);
+        point.set(tmp.x, tmp.y);
+        System.out.println(point);
     }
 
 }

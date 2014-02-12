@@ -3,23 +3,22 @@ package crossj.engine.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import crossj.engine.event.EventDispatcher;
 import crossj.engine.fonts.TTFontCache;
-import crossj.engine.util.Graphics;
+import crossj.engine.rendering.Viewport;
 
 public abstract class Screen2D implements Screen, InputProcessor {
     protected final EventDispatcher eventDispatcher;
-    protected final OrthographicCamera camera;
     protected final SpriteBatch spriteBatch;
     protected final String debugName;
     protected final TTFontCache fonts;
     protected final BitmapFont debugFont;
     protected final Vector2 debugPos = new Vector2();
+    protected final Viewport viewport = new Viewport(1920, 1080);
 
     public Screen2D() {
         this(null);
@@ -31,10 +30,8 @@ public abstract class Screen2D implements Screen, InputProcessor {
         } else {
             this.debugName = debugName;
         }
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-        camera = new OrthographicCamera(w, h);
-        camera.setToOrtho(false);
+
+        viewport.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         spriteBatch = new SpriteBatch();
         eventDispatcher = new EventDispatcher();
 
@@ -48,22 +45,23 @@ public abstract class Screen2D implements Screen, InputProcessor {
      */
     @Override
     public void render(float delta) {
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        viewport.apply();
 
-        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setProjectionMatrix(viewport.camera.combined);
         spriteBatch.begin();
         draw(delta);
         spriteBatch.end();
-
         renderDebugInfo(delta);
     }
 
     protected abstract void draw(float delta);
 
     private void renderDebugInfo(float delta) {
-        Graphics.unproject(camera, 0, 0, debugPos);
-        spriteBatch.setProjectionMatrix(camera.combined);
+        viewport.project(debugPos.set(0, viewport.getReferenceHeight()));
+        spriteBatch.setProjectionMatrix(viewport.camera.combined);
         spriteBatch.begin();
         debugFont.drawMultiLine(spriteBatch, getDebugString(), debugPos.x, debugPos.y);
         spriteBatch.end();
@@ -86,12 +84,13 @@ public abstract class Screen2D implements Screen, InputProcessor {
     }
 
     public String getDebugString() {
-        return "Resolution: " + (int)camera.viewportWidth + "x" + (int)camera.viewportHeight
-                + " | " + "FPS: " + Gdx.graphics.getFramesPerSecond() + " | " + "Screen: " + debugName;
+        return "Resolution: " + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + " | " + "FPS: "
+                + Gdx.graphics.getFramesPerSecond() + " | " + "Screen: " + debugName;
     }
 
     @Override
     public void resize(int width, int height) {
+        viewport.resize(width, height);
     }
 
     @Override
