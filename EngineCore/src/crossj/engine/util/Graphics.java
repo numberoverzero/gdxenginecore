@@ -1,6 +1,5 @@
 package crossj.engine.util;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -10,10 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 
 public class Graphics {
-    private static Vector3 tmp = new Vector3();
     public static final Vector2 CENTER = new Vector2(0.5f, 0.5f);
 
     public static Animation fromSpriteSheet(Texture texture, float frameDuration, int frameColumns, int frameRows) {
@@ -28,20 +25,6 @@ public class Graphics {
             }
         }
         return new Animation(frameDuration, frames);
-    }
-
-    /**
-     * Avoids an allocation for the result by setting the outVec
-     */
-    public static void unproject(Camera camera, float x, float y, Vector2 outVec) {
-        camera.unproject(tmp.set(x, y, 0));
-        outVec.set(tmp.x, tmp.y);
-    }
-
-    public static Vector2 unproject(Camera camera, float x, float y) {
-        Vector2 outVec = new Vector2();
-        unproject(camera, x, y, outVec);
-        return outVec;
     }
 
     /**
