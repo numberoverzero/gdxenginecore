@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -24,18 +23,11 @@ public class TTFontCache implements Disposable {
     }
 
     /**
-     * Associate a font with a given (internal) .tff file
-     */
-    public void add(String name, String path) {
-        add(name, Gdx.files.internal(path));
-    }
-
-    /**
      * Associate a font with a given .tff file
      */
     public void add(String name, FileHandle font) {
         if (contains(name)) {
-            throw new RuntimeException("Font '" + name + "' already exists.");
+            return;
         }
         generators.put(name, new FreeTypeFontGenerator(font));
     }
