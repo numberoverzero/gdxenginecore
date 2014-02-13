@@ -51,7 +51,7 @@ public abstract class Screen2D implements Screen, InputProcessor {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        viewport.apply();
+        viewport.begin();
 
         spriteBatch.setProjectionMatrix(viewport.camera.combined);
         spriteBatch.begin();

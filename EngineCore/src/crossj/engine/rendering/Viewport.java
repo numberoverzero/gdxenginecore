@@ -7,8 +7,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * This allows the orthographic camera to keep width and height fixed to the
- * screen size. Call apply() before drawing to scale rendering.
+ * This allows the camera to keep width and height fixed to the reference screen
+ * size (usually 1920x1080). Call begin() before drawing to render in reference
+ * screen coordinates - use end() to render in real screen coordinates.
  *
  * Based off the work here:
  * http://www.acamara.es/blog/2012/02/keep-screen-aspect
@@ -56,8 +57,12 @@ public class Viewport {
     /**
      * Apply the viewport before rendering
      */
-    public void apply() {
+    public void begin() {
         Gdx.gl.glViewport((int) viewport.x, (int) viewport.y, (int) viewport.width, (int) viewport.height);
+    }
+
+    public void end() {
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     /**
@@ -75,22 +80,21 @@ public class Viewport {
     }
 
     /**
-     * Project a point from world coordinates to screen coordinates for a given
-     * camera
+     * Project a point from world coordinates to screen coordinates
      */
     public void project(Vector2 point) {
-        camera.project(tmp.set(point.x, point.y, 0), viewport.x, viewport.y, viewport.width, viewport.height);
+        camera.project(tmp.set(point.x, point.y, 0), (int) viewport.x, (int) viewport.y, (int) viewport.width,
+                (int) viewport.height);
         point.set(tmp.x, tmp.y);
     }
 
     /**
-     * Unproject a point from screen coordinates to world coordinates for a
-     * given camera
+     * Unproject a point from screen coordinates to world coordinates
      */
     public void unproject(Vector2 point) {
-        camera.unproject(tmp.set(point.x, point.y, 0), viewport.x, viewport.y, viewport.width, viewport.height);
+        camera.unproject(tmp.set(point.x, point.y, 0), (int) viewport.x, (int) viewport.y, (int) viewport.width,
+                (int) viewport.height);
         point.set(tmp.x, tmp.y);
-        System.out.println(point);
     }
 
 }
