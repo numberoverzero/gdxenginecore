@@ -3,6 +3,7 @@ package crossj.engine.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import crossj.engine.event.EventDispatcher;
 import crossj.engine.fonts.TTFontCache;
 import crossj.engine.rendering.Viewport;
+import crossj.engine.util.Graphics;
 
 public abstract class Screen2D implements Screen, InputProcessor {
     protected final EventDispatcher eventDispatcher;
@@ -19,6 +21,7 @@ public abstract class Screen2D implements Screen, InputProcessor {
     protected final BitmapFont debugFont;
     protected final Vector2 debugPos = new Vector2();
     protected final Viewport viewport = new Viewport(1920, 1080);
+    protected final Texture white = Graphics.pixel(0.1f, 0.1f, 0.1f, 1);
 
     public Screen2D() {
         this(null);
@@ -37,7 +40,7 @@ public abstract class Screen2D implements Screen, InputProcessor {
 
         fonts = new TTFontCache();
         fonts.add("open-sans", Gdx.files.internal("data/OpenSans-Regular.ttf"));
-        debugFont = fonts.get("open-sans", 18);
+        debugFont = fonts.get("open-sans", 28);
     }
 
     /**
@@ -52,6 +55,7 @@ public abstract class Screen2D implements Screen, InputProcessor {
 
         spriteBatch.setProjectionMatrix(viewport.camera.combined);
         spriteBatch.begin();
+        spriteBatch.draw(white, 0, 0, viewport.getReferenceWidth(), viewport.getReferenceHeight());
         draw(delta);
         spriteBatch.end();
         renderDebugInfo(delta);
@@ -60,9 +64,9 @@ public abstract class Screen2D implements Screen, InputProcessor {
     protected abstract void draw(float delta);
 
     private void renderDebugInfo(float delta) {
-        viewport.project(debugPos.set(0, viewport.getReferenceHeight()));
         spriteBatch.setProjectionMatrix(viewport.camera.combined);
         spriteBatch.begin();
+        debugPos.set(0, viewport.getReferenceHeight());
         debugFont.drawMultiLine(spriteBatch, getDebugString(), debugPos.x, debugPos.y);
         spriteBatch.end();
     }
