@@ -1,5 +1,8 @@
 package crossj.engine.rendering;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
@@ -16,6 +19,7 @@ import com.badlogic.gdx.math.Vector3;
  * -ratio-with-different-resolutions-using-libgdx/
  */
 public class Viewport {
+    private final List<ViewportListener> listeners = new ArrayList<>();
     public final OrthographicCamera camera;
     private final Rectangle viewport = new Rectangle();
     private final int referenceWidth, referenceHeight;
@@ -29,6 +33,10 @@ public class Viewport {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, referenceWidth, referenceHeight);
         referenceRatio = (float) referenceWidth / (float) referenceHeight;
+    }
+
+    public void addListener(ViewportListener listener) {
+        listeners.add(listener);
     }
 
     /**
@@ -52,6 +60,9 @@ public class Viewport {
         float w = referenceWidth * scale;
         float h = referenceHeight * scale;
         viewport.set(x, y, w, h);
+        for (ViewportListener listener : listeners) {
+            listener.onViewportResize(this, width, height);
+        }
     }
 
     /**
