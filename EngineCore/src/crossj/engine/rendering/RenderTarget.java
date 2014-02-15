@@ -15,4 +15,6 @@ public interface RenderTarget extends Disposable {
 
     public int getHeight();
 
+    public void resize(int width, int height);
+
 }
